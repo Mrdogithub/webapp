@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="osbTab">
         <div class="tab">
             <div class="tab-item"><a :class="{'active':currentTab == 'location'}" @click = 'swtichTab("location", $event)'>地点</a></div>
             <div class="tab-item"><a :class="{'active':currentTab == 'dealer'}" @click='swtichTab("dealer", $event)'>经销商名称</a></div>
@@ -23,7 +23,7 @@
 </script>
 
 <style lang="stylus" rel="stylesheet/stylus">
-    .tab
+    .osbTab .tab
         display: flex
         width: 100%
         height: 56px
@@ -38,5 +38,4 @@
                 &.active
                     color:rgb(56,147,170)
                     border-bottom:2px solid rgb(56,147,170)
-
 </style>

@@ -31,14 +31,15 @@ export default {
     data () {
        return {
             errorMessageStatus: false,
-            errorMessageText: ''
+            errorMessageText: '',
+            iconStatus: true
        }
     },
     created () {
-        this.iconStatus = true
     },
     methods: {
         goBack (type) {
+            console.log(1, type)
             var isAndroid = ''
             var isiOS = ''
             var u = navigator.userAgent
@@ -46,42 +47,42 @@ export default {
                 isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1 // android终端
                 isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/) // ios终端
                 if (isAndroid) {
-                    window.AppModel.postMessage('GotoChooseVehicle')
-                } else if (isiOS) {
-                    window.webkit.messageHandlers.AppModel.postMessage('GotoChooseVehicle')
+					window.AppModel.postMessage(JSON.stringify({'message': 'gotoChooseVehicle'}))
+				} else if (isiOS) {
+					window.webkit.messageHandlers.AppModel.postMessage({'message': 'gotoChooseVehicle'})
                 }
             } else if (type === 'Order Summary') {
                 isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1 // android终端
                 isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/) // ios终端
                 if (isAndroid) {
-                    window.AppModel.postMessage('gotoAppointmentList')
-                } else if (isiOS) {
-                    window.webkit.messageHandlers.AppModel.postMessage('gotoAppointmentList')
+					window.AppModel.postMessage(JSON.stringify({'message': 'gotoAppointmentList'}))
+				} else if (isiOS) {
+					window.webkit.messageHandlers.AppModel.postMessage({'message': 'gotoAppointmentList'})
                 }
-                this.$router.goBack()
             } else {
-                this.$router.goBack()
-                // this.$router.push({name: 'selectDealerOption'})
+                this.$router.goBack(-1)
             }
         },
         switchView () {
-            console.log(this.iconStatus)
             this.iconStatus = !this.iconStatus
             this.$emit('icon-switch-status', this.iconStatus)
         },
         errorCloseFn (errorMessageText, status) {
             this.errorMessageText = errorMessageText
-            this.errorMessageStatus = status
+            status === 10 ? this.errorMessageStatus = false : this.errorMessageStatus = status
         }
     }
 }
 </script>
 <style lang="stylus" rel="stylesheet/stylus">
     .bar-wrapper
-        max-height: 108px
-    .bar
+        max-height:108px
+        width:100%
+        position:fixed
+        z-index:999
+    .bar-wrapper .bar
         display:flex
-        height:60px
+        height:58px
         background:rgb(69,150,164)
         padding-top:22px
         border-radius: 15px 15px 0 0
@@ -103,7 +104,7 @@ export default {
             margin-right:20px
             font-size:25px
             color:#fff
-    .errorMessageWrapper
+    .bar-wrapper .errorMessageWrapper
         width:100%
         min-height:55px
         position:absolute

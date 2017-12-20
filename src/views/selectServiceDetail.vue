@@ -1,15 +1,45 @@
 <template>
-  <div>
+  <div class="selectServiceDetail">
         <bar v-bind="{ 'title': '保养套餐详情','allIconStatus': false, 'goBackIcon': true}"></bar>
         <div class="content-wrapper">
             <ul class="detail-list-wrapper">
-                <li class="detail-list-item" v-on:click="showServicePackage()">5000 km service package<span><Icon type="ios-arrow-forward"></Icon></span></li>
-                <li class="detail-list-item">5000 km service package<span><Icon type="ios-arrow-forward"></Icon></span></li>
-                <li class="detail-list-item">5000 km service package<span><Icon type="ios-arrow-forward"></Icon></span></li>
-                <li class="detail-list-item">5000 km service package<span><Icon type="ios-arrow-forward"></Icon></span></li>
-                <li class="detail-list-item">5000 km service package<span><Icon type="ios-arrow-forward"></Icon></span></li>
-                <li class="detail-list-item">5000 km service package<span><Icon type="ios-arrow-forward"></Icon></span></li>
-                <li class="detail-list-item">5000 km service package<span><Icon type="ios-arrow-forward"></Icon></span></li>
+                <li class="detail-list-item" v-on:click="showServicePackage()">5000 km service package</li>
+                <li class="detail-list-item">5000 km service package</li>
+                <li class="detail-list-item">5000 km service package</li>
+                <li class="detail-list-item">5000 km service package</li>
+                <li class="detail-list-item">5000 km service package</li>
+                <li class="detail-list-item">5000 km service package</li>
+                <li class="detail-list-item">5000 km service package</li>
+                                <li class="detail-list-item">5000 km service package</li>
+                <li class="detail-list-item">5000 km service package</li>
+                <li class="detail-list-item">5000 km service package</li>
+                <li class="detail-list-item">5000 km service package</li>
+                <li class="detail-list-item">5000 km service package</li>
+                <li class="detail-list-item">5000 km service package</li>
+                                <li class="detail-list-item">5000 km service package</li>
+                <li class="detail-list-item">5000 km service package</li>
+                <li class="detail-list-item">5000 km service package</li>
+                <li class="detail-list-item">5000 km service package</li>
+                <li class="detail-list-item">5000 km service package</li>
+                <li class="detail-list-item">5000 km service package</li>
+                                <li class="detail-list-item">5000 km service package</li>
+                <li class="detail-list-item">5000 km service package</li>
+                <li class="detail-list-item">5000 km service package</li>
+                <li class="detail-list-item">5000 km service package</li>
+                <li class="detail-list-item">5000 km service package</li>
+                <li class="detail-list-item">5000 km service package</li>
+                                <li class="detail-list-item">5000 km service package</li>
+                <li class="detail-list-item">5000 km service package</li>
+                <li class="detail-list-item">5000 km service package</li>
+                <li class="detail-list-item">5000 km service package</li>
+                <li class="detail-list-item">5000 km service package</li>
+                <li class="detail-list-item">5000 km service package</li>
+                                <li class="detail-list-item">5000 km service package</li>
+                <li class="detail-list-item">5000 km service package</li>
+                <li class="detail-list-item">5000 km service package</li>
+                <li class="detail-list-item">5000 km service package</li>
+                <li class="detail-list-item">5000 km service package</li>
+                <li class="detail-list-item">5000 km service package</li>
             </ul>
         </div>
         <div class="server-package-wrapper" v-show="showFlag" @click.prevent="hideServicePackage">
@@ -19,8 +49,8 @@
                     <div class="content-item">
                         <h2>检查</h2>
                         <div class="content-item-wrapper">
-                            <p>1 机油滤清器* （6个月^）</p>
-                            <p>2 发动机机油（6个月^）</p>
+                            <p><span style="color:rgb(155,155,155)">1</span> 机油滤清器* （6个月^）</p>
+                            <p><span style="color:rgb(155,155,155)">2</span> 发动机机油（6个月^）</p>
                             <div class="note">
                                 <small><sup>*</sup>建议恶劣环境缩短周期</small>
                                 <small><sup>^</sup>最长保养时间间隔</small>
@@ -31,8 +61,8 @@
                     <div class="content-item">
                         <h2>替换</h2>
                         <div class="content-item-wrapper">
-                            <p>1 机油滤清器* （6个月^）</p>
-                            <p>2 发动机机油（6个月^）</p>
+                            <p><span style="color:rgb(155,155,155)">1</span> 机油滤清器* （6个月^）</p>
+                            <p><span style="color:rgb(155,155,155)">2</span> 发动机机油（6个月^）</p>
                         </div>   
                     </div>
                     <div class="largeBtnWrapper">
@@ -73,22 +103,25 @@ export default {
 }
 </script>
 <style lang="stylus" rel="stylesheet/stylus">
-    .detail-list-wrapper
+    .selectServiceDetail .detail-list-wrapper
         width:100%
-    .detail-list-item
+        padding-right:27px
+        padding-left:23px
+    .selectServiceDetail .detail-list-item
         position:relative
         height:55px
-        width:86.6666%
+        width:100%
         margin:0 auto
         line-height:55px
         text-align:left
         font-size:14px
+        color:rgb(45,152,205)
         border-bottom:1px solid #dddee1
-    .detail-list-item span
+    .selectServiceDetail .detail-list-item span
         position:absolute
         right:0px;
         color:rgb(45,152m205)
-    .server-package-wrapper
+    .selectServiceDetail .server-package-wrapper
         position:fixed
         top:0px
         width:100%
@@ -98,7 +131,7 @@ export default {
         overflow:auto
         backdrop-filter:blur
         background:rgba(7,17,27,0.8)
-    .server-package-content-wrapper
+    .selectServiceDetail .server-package-content-wrapper
         width:91.2%
         height: 523px;
         position: absolute;
@@ -109,7 +142,7 @@ export default {
         margin: auto;
         border-radius: 18px;
         background-color:rgb(249,252,255)
-    .server-package-title
+    .selectServiceDetail .server-package-title
         width:100%
         height:61px
         line-height:61px
@@ -117,12 +150,13 @@ export default {
         font-size:17px
         font-weight:normal
         color:rgb(18,78,132)
-    .content-item
+    .selectServiceDetail .content-item
         &>h2
             height:58px
             line-height:58px
             font-size:18px
             font-weight:normal
+            color:rgb(149,149,149)
         &>.content-item-wrapper
             width:100%
             height:auto
@@ -145,11 +179,13 @@ export default {
                     font-size:14px
                 &>sup
                     margin-right:5px
-	.largeBtnWrapper
+	.selectServiceDetail .largeBtnWrapper
 		margin-top:20px
 		text-align:center
-	.largeBtn
+	.selectServiceDetail .largeBtn
 		width:77.7777%
-		height:55px
-
+	.selectServiceDetail  .ivu-btn-primary
+        background-color: rgb(45,150,205)
+        border-color: rgb(45,150,205)
+        font-size:14px
 </style>

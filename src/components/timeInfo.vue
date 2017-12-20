@@ -9,9 +9,9 @@
                 </div>
                 <div class="timeContentWrapper">
                     <div class="timeContent">
-                        <a  v-for="Time in Times" @click="selected(Time)" :class="{active: activeName == Time.time, unavailable: Time.flag == false }">
+                        <a  v-for="Time in Times" @click="selected(Time)"  :value="Time.time" :key="Time.time"  :class = "{ 'active': activeName == Time.time, 'unavailable': Time.flag == false }">
                             <p>{{Time.time}}</p>
-                            <p>{{Time.message}}</p>
+                            <p v-show='!Time.flag'>暂不可约</p>
                         </a>    
                     </div>
                 </div>
@@ -22,158 +22,223 @@
 
 <script>
 export default {
-    props: {
-    },
+    props: { },
     data () {
        return {
            showTimeInfo: false,
+           mockData: {
+                'requestStatus': 'CURRENT',
+                'error': null,
+                'lastRequested': '2017-12-23T16:25:03.459Z',
+                'value': {
+                    'calendarStart': '2017-12-24',
+                    'calendarEnd': '2017-12-24',
+                    'timeSlotDuration': 0,
+                    'availableDates': [
+                        {
+                            'date': '2017-12-24',
+                            'availableTimeSlots': [
+                                '07:30:00',
+                                '08:00:00',
+                                '08:30:00',
+                                '10:00:00',
+                                '10:30:00',
+                                '11:00:00',
+                                '12:00:00'
+                            ]
+                        }
+                    ]
+                }
+            },
            Times: [
                {
+                   time: '7:00',
+                   timeFlag: '07:00:00',
+                   flag: false
+               },
+               {
+                   time: '7:30',
+                   timeFlag: '07:30:00',
+                   flag: false
+               },
+               {
                    time: '8:00',
-                   flag: true,
-                   message: ''
+                   timeFlag: '08:00:00',
+                   flag: false
                },
                {
                    time: '8:30',
-                   flag: true,
-                   message: ''
+                   timeFlag: '08:30:00',
+                   flag: false
                },
                {
                    time: '9:00',
-                   flag: true,
-                   message: ''
+                   timeFlag: '09:00:00',
+                   flag: false
                },
                {
                    time: '9:30',
-                   flag: false,
-                   message: '暂不可约'
+                   timeFlag: '09:30:00',
+                   flag: false
                },
                {
                    time: '10:00',
-                   flag: true,
-                   message: ''
+                   timeFlag: '10:00:00',
+                   flag: false
                },
                {
                    time: '10:30',
-                   flag: true,
-                   message: ''
+                   timeFlag: '10:30:00',
+                   flag: false
                },
                {
                    time: '11:00',
-                   flag: true,
-                   message: ''
+                   timeFlag: '11:00:00',
+                   flag: false
                },
                {
                    time: '11:30',
-                   flag: false,
-                   message: '暂不可约'
+                   timeFlag: '11:30:00',
+                   flag: false
                },
                {
                    time: '12:00',
-                   flag: true,
-                   message: ''
+                   timeFlag: '12:00:00',
+                   flag: false
                },
                {
                    time: '12:30',
-                   flag: true,
-                   message: ''
+                   timeFlag: '12:30:00',
+                   flag: false
                },
                {
                    time: '13:00',
-                   flag: true,
-                   message: ''
+                   timeFlag: '13:00:00',
+                   flag: false
                },
                {
                    time: '13:30',
-                   flag: false,
-                   message: '暂不可约'
+                   timeFlag: '13:30:00',
+                   flag: false
                },
                {
                    time: '14:00',
-                   flag: true,
-                   message: ''
+                   timeFlag: '14:00:00',
+                   flag: false
                },
                {
                    time: '14:30',
-                   flag: false,
-                   message: '暂不可约'
+                   timeFlag: '14:30:00',
+                   flag: false
                },
                {
                    time: '15:00',
-                   flag: true,
-                   message: ''
+                   timeFlag: '15:00:00',
+                   flag: false
                },
                {
                    time: '15:30',
-                   flag: true,
-                   message: ''
+                   timeFlag: '15:30:00',
+                   flag: false
                },
                {
                    time: '16:00',
-                   flag: true,
-                   message: ''
+                   timeFlag: '16:00:00',
+                   flag: false
                },
                {
                    time: '16:30',
-                   flag: true,
-                   message: ''
+                   timeFlag: '16:30:00',
+                   flag: false
                },
                {
                    time: '17:00',
-                   flag: true,
-                   message: ''
+                   timeFlag: '17:00:00',
+                   flag: false
                },
                {
                    time: '17:30',
-                   flag: true,
-                   message: ''
+                   timeFlag: '17:30:00',
+                   flag: false
                },
                {
                    time: '18:00',
-                   flag: true,
-                   message: ''
+                   timeFlag: '18:00:00',
+                   flag: false
                },
                {
                    time: '18:30',
-                   flag: true,
-                   message: ''
+                   timeFlag: '18:30:00',
+                   flag: false
                },
                {
                    time: '19:00',
-                   flag: true,
-                   message: ''
+                   timeFlag: '19:00:00',
+                   flag: false
                },
                {
                    time: '19:30',
-                   flag: true,
-                   message: ''
+                   timeFlag: '19:30:00',
+                   flag: false
                },
                {
                    time: '20:00',
-                   flag: true,
-                   message: ''
+                   timeFlag: '20:00:00',
+                   flag: false
                }
             ],
-           activeTime: '',
-           activeName: ''
+            activeTime: '',
+            activeName: '',
+            availableTimeSlotsArr: [],
+            selectTimeAndDateParams: {
+                headersContent: {},
+                params: {}
+            }
        }
     },
-    created: {
-        url: '/api/active_time',
-        dataType: 'json',
-        success: function (data) {
-            this.time = data.time
-            this.flag = data.flag
-            this.message = data.message
-            console.log(self.time)
-        },
-        error: function (data) {
-            console.log('jsonName error!')
-        }
+    created: function () {
+        let _osbAuth = JSON.parse(window.localStorage.getItem('osb'))
+		this.selectTimeAndDateParams.params.dealerCode = _osbAuth.chooseDealerParams.OSBDealerID
+		this.selectTimeAndDateParams.headersContent.headers['Auth-token'] = _osbAuth.accessToken
+		this.selectTimeAndDateParams.headersContent.headers['Application-id'] = _osbAuth.guid
+
+        this.getDate()
     },
     methods: {
+        getDate (message) {
+            let _testData = this.mockData.value.availableDates[0].availableTimeSlots
+            for (let i = 0; i < _testData.length; i++) {
+                for (let j = 0; j < this.Times.length; j++) {
+                    if (_testData[i] === this.Times[j].timeFlag) {
+                        this.Times[j].flag = true
+                    }
+                }
+            }
+            // this.$http.get('https://servicebooking-service-qa.apps.cl-cn-east-preprod01.cf.ford.com/api/v2/calendar', this.selectTimeAndDateParams.params, this.selectTimeAndDateParams.headersContent).then(function (response) {
+            //     this.availableTimeSlotsArr = response.data.data.value.availableDates[0].availableTimeSlots
+            //     console.log(response)
+            //     if (this.availableTimeSlotsArr.length) {
+            //         for (let i = 0; i < this.availableTimeSlotsArr.length; i++) {
+            //             for (let j = 0; j < this.Times.length; j++) {
+            //                 if (this.availableTimeSlotsArr[i] === this.Times[j].timeFlag) {
+            //                     this.Times[j].flag = true
+            //                 }
+            //             }
+            //         }
+            //     } else {
+            //         let _testData = this.mockData.value.availableDates[0].availableTimeSlots
+            //         for (let i = 0; i < _testData.length; i++) {
+            //             for (let j = 0; j < this.Times.length; j++) {
+            //                 if (_testData[i] === this.Times[j].timeFlag) {
+            //                     this.Times[j].flag = true
+            //                 }
+            //             }
+            //         }
+            //     }
+            // }, function (response) {
+            // })
+        },
         showTime (message, status) {
-            console.log(message)
             this.showTimeInfo = status
         },
         cancel () {
@@ -186,7 +251,6 @@ export default {
         selected (Time) {
             this.activeName = Time.time
             var activeTime = Time.time
-            console.log(activeTime)
             if (Time.flag === true) {
                 this.$emit('child-say', activeTime)
             } else {
@@ -197,7 +261,7 @@ export default {
 }
 </script>
 <style lang="stylus" rel="stylesheet/stylus">
-    .timeInfoOverlay
+   .timeInfoOverlay
         position:absolute
         top:0
         bottom:0
@@ -255,3 +319,6 @@ export default {
                 font-size: 8px
                 letter-spacing: -0.1px
 </style>
+
+
+

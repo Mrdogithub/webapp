@@ -1,15 +1,15 @@
 <template>
-<div class="myAppointment">
+	<div class="myAppointment">
 		<div ref="scroll" class = "scroll listView">
 			<ul>
-				<li class="listViewItem" @click = "showMyAppointmentDetail">
+				<li class="listViewItem" @click = "showMyAppointmentDetail" v-for = " item in vehicles" :key = 'item.vin' :value = 'item.vin'>
 					<div class="infoContent">
 						<h2 style="font-size:12px">2018/2/1. 19:00</h2>
 						<p style="color:rgb(45,150,205);font-size:14px">onLine Servicing Booking: My Mondeo</p>
 						<span style="color:rgb(149,149,149);font-size:12px">Ongoing request</span>
 					</div>
 				</li>
-                <li class="listViewItem" @click = "showMyAppointmentDetail">
+				<li class="listViewItem" @click = "showMyAppointmentDetail">
 					<div class="infoContent">
 						<h2 style="font-size:12px">2018/2/1. 19:00</h2>
 						<p style="color:rgb(45,150,205);font-size:14px">onLine Servicing Booking: My Mondeo</p>
@@ -18,7 +18,7 @@
 				</li>
 			</ul>
 		</div>
-</div>
+	</div>
 </template>
 
 <script>
@@ -27,6 +27,7 @@ export default {
 	props: {},
 	data () {
 		return {
+			vehicles: []
 		}
 	},
 	methods: {
@@ -34,15 +35,20 @@ export default {
             var u = navigator.userAgent
             var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1 // android终端
             var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/) // ios终端
-            if (isAndroid) {
-                window.AppModel.postMessage('gotoAppointmentDetail')
-            } else if (isiOS) {
-                window.webkit.messageHandlers.AppModel.postMessage('gotoAppointmentDetail')
-            }
+			if (isAndroid) {
+				window.AppModel.postMessage(JSON.stringify({'message': 'gotoAppointmentDetail'}))
+			} else if (isiOS) {
+				window.webkit.messageHandlers.AppModel.postMessage({'message': 'gotoAppointmentDetail'})
+			}
             this.$router.push({name: 'orderSummary'})
         }
 	},
 	created () {
+		let _osbAuth = JSON.parse(window.localStorage.getItem('osb'))
+		this.vehicles = _osbAuth.vehicles
+		this.serviceAdvisorsParams.params.OSBDealerID = _osbAuth.chooseDealerParams.OSBDealerID
+		this.serviceAdvisorsParams.headersContent.headers['Auth-token'] = _osbAuth.accessToken
+		this.serviceAdvisorsParams.headersContent.headers['Application-id'] = _osbAuth.guid
 	},
 	components: {
 	}
@@ -54,7 +60,6 @@ export default {
 		top: 0px
 		width: 100%
 		overflow: hidden
-	
 	.myAppointment .listViewItem
 			display:flex
 			width:100%

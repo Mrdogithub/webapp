@@ -15,10 +15,6 @@ app.use('/api', apiRoutes)
 
 var appData = require('../active_dealer_pickup_zh.json')
 
-
-
-
-
 const devWebpackConfig = merge(baseWebpackConfig, {
   module: {
     rules: utils.styleLoaders({ sourceMap: config.dev.cssSourceMap, usePostCSS: true })

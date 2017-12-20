@@ -1,5 +1,5 @@
 <template>
-<div>
+<div class="orderSummary">
 	<div>
         <bar v-bind="{ 'title': 'Order Summary', 'goBackIcon': true}"></bar>
             <div class="content-wrapper">
@@ -120,7 +120,7 @@ export default {
 }
 </script>
 <style lang="stylus" rel="stylesheet/stylus">
-    .orderConfirm
+    .orderSummary .orderConfirm
         position:fixed
         top:0px
         width:100%
@@ -142,15 +142,15 @@ export default {
             height:260px
             background:rgb(249,252,255)
             border-radius:18px
-	.largeBtnWrapper
+	.orderSummary .largeBtnWrapper
 		margin-top:20px
 		text-align:center
-	.largeBtn
+	.orderSummary .largeBtn
 		width:90.1333%
 		height 55px
-	.inputevenHook .ivu-input
+	.orderSummary .inputevenHook .ivu-input
 		border-top:none
-	.ivu-input
+	.orderSummary .ivu-input
 		height:55px
 		width: 100%
 		padding-left:25px
@@ -158,80 +158,80 @@ export default {
 		border-radius:0px
 		border-left:none
 		border-right:none
-	.ivu-radio-group
+	.orderSummary .ivu-radio-group
 		width:100%
-	.ivu-radio-group-vertical .ivu-radio-wrapper
+	.orderSummary .ivu-radio-group-vertical .ivu-radio-wrapper
 		height:55px
 		line-height:55px
 	
-	.select-item
+	.orderSummary .select-item
 		position:relative
 		width: 85.7333%
 		height:55px
 		margin:0 auto
 		line-height:55px	
 		border-bottom:1px solid #dddee1
-	.radio-text
+	.orderSummary .radio-text
 		position:absolute
 		left:0px
-	.ivu-radio
+	.orderSummary .ivu-radio
 		position:absolute
 		right:0px
 		top:18px
-	.ivu-input:hover
+	.orderSummary .ivu-input:hover
 		border-top-color: #57a3f3
 		border-bottom-color: #57a3f3
-	.ivu-input-group-prepend
+	.orderSummary .ivu-input-group-prepend
 		display:none
-	.ivu-input-group-append, .ivu-input-group-prepend
+	.orderSummary .ivu-input-group-append, .ivu-input-group-prepend
 		background-color:#fff
 		padding-right:16px
 		font-size:14px
 		color:rgb(149,149,149)
 		border-right:none
 		border-radius: 0px;
-	.ivu-input[disabled]
+	.orderSummary .ivu-input[disabled]
 		background-color: #fff;
 		opacity: 1;
 		cursor: not-allowed;
 		color: #000;
-	.ivu-btn-primary
+	.orderSummary .ivu-btn-primary
 		font-size:17px
 		background:rgb(45,150,205)
 		border-color:rgb(45,150,205)
-	.modifyOrder .ivu-btn-primary
+	.orderSummary .modifyOrder .ivu-btn-primary
 		font-size:17px
 		color:rgb(45,150,205)
 		background:#fff
 		border-color:rgb(45,150,205)
-	.inputevenHook .ivu-input-group-append
+	.orderSummary .inputevenHook .ivu-input-group-append
 		border-top:0px
-	textarea.ivu-input
+	.orderSummary textarea.ivu-input
 		width:90.1333%
 		border:1px solid #dddee1
 		border-radius:4px
-	.content-wrapper
+	.orderSummary .content-wrapper
 		font-size:14px
 		color:rgb(149,149,149)
-	.server-type-detail
+	.orderSummary .server-type-detail
 		position: absolute;
 		left: 30%;
 		top:2%
 		width: 50px;
 		font-size: 21px;
 		color:rgb(45,150,205)
-	.input-title
+	.orderSummary .input-title
 		height:50px
 		font-size:14px
 		color:rgb(149,149,149)
 		line-height:50px
 		background:rgb(249,252,255)
-	.text-wrapper
+	.orderSummary .text-wrapper
 		padding:27px 18px 18px 22px
 		text-align:left
 		border-top:1px solid #dddee1
 		border-bottom:1px solid #dddee1	
-	.info
+	.orderSummary .info
 		display:flex
 		padding:15px
 		border-top:1px solid #dddee1
@@ -243,9 +243,8 @@ export default {
 		&>.info-text p
 			width:197px
 			text-align:left
-	.radio-text
+	.orderSummary .radio-text
 		font-size: 14px
-	.btn-wrapper
+	.orderSummary .btn-wrapper
 		margin-top:17px
-
 </style>
