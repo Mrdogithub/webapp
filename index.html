@@ -14,52 +14,33 @@
     <div id="app"></div>
   </body>
   <script>
-			function importNativeData(message){
-				// alert(message)
-				console.log('0000000')
-				console.log(1, message)
-				var _test = {
-					"vehicles": [
-						{
-							"modelYear": "2018",
-							"vin": "LVSHFFFC6HF637525",
-							"nickName": "",
-							"modelName": "Mondeo Hybrid - NH"
-						},
-						{
-							"modelYear": "2018",
-							"vin": "LVSHFFFC4HF637524",
-							"nickName": "524",
-							"modelName": "Mondeo Hybrid - NH"
-						}
-					],
-					"selectedVehicle": {
-						"modelYear": "2018",
-						"vin": "LVSHFFFC6HF637525",
-						"nickName": "",
-						"modelName": "Mondeo Hybrid - NH"
-					},
-					"userName": "Test",
-					"guid": "268a988b-fc48-42b2-b395-aaca45cb5f11",
-					"phoneNumber": "18701712130",
-					"accessToken": "PAA/AHgAbQBsACAAdgBlAHIAcwBpAG8AbgA9ACIAMQAuADAAIgAgAGUAbgBjAG8AZABpAG4AZwA9ACIAdQB0AGYALQAxADYAIgA/AD4APABBAEMAPgA8AFQAbwBrAGUAbgBEAGEAdABhAD4APAAhAFsAQwBEAEEAVABBAFsAewAiAEQAaQBzAHAAbABhAHkATgBhAG0AZQAiADoAIgA3ADgAOQA0ADUANgA2ADEAMgAzADMAIgAsACIAVQBuAGkAcQB1AGUAQQB1AHQAaABJAGQAIgA6ACIAMgA2ADgAYQA5ADgAOABiAC0AZgBjADQAOAAtADQAMgBiADIALQBiADMAOQA1AC0AYQBhAGMAYQA0ADUAYwBiADUAZgAxADEAIgAsACIARQB4AHQAZQByAG4AYQBsAFQAbwBrAGUAbgAiADoAIgAwADcAMQA5ADUANwA3AGYALQA4ADMAMAAzAC0ANABmAGIAYgAtAGEAOQA1AGIALQA0ADMAZgA4AGQAOQBhAGIAYgBkADYAZQAiACwAIgBTAGUAcwBzAGkAbwBuAEkAZAAiADoAIgAzADQAZABiADIAMgBjADEALQA0ADYAZAA2AC0ANAAxADkAMgAtAGIAYgAzADgALQA5ADAAYQA4ADAAYwBmADYAMQA4AGIAYgAiACwAIgBEAGEAdABlAEkAcwBzAHUAZQBkACIAOgAtADgANQA4ADYAOAA5ADEANgA2ADQAOQA5ADIANAAyADAAMQAwADEALAAiAEkAcwBzAHUAZQByACIAOgAiAGwAaQBnAGgAdABoAG8AdQBzAGUAIgAsACIAVgBhAGwAaQBkAGEAdABlAGQAIgA6ACIAMgAwADEANwAtADEAMgAtADAANQBUADAAMgA6ADEAOQA6ADQANgAuADIAMwA1ADUANwAwADcAKwAwADAAOgAwADAAIgAsACIAVgBlAHIAcwBpAG8AbgAiADoAIgAxAC4AMAAuADAAIgAsACIAVABUAEwAIgA6ADEANAA0ADAAMAAuADAALAAiAFUAcwBlAHIASQBkACIAOgAxADAANQAsACIAUwBkAG4AQQBwAHAASQBkACIAOgA4ADkALAAiAEQAYQB0AGEAQwBlAG4AdABlAHIAIgA6ACIAYwBuAGUAIgB9AF0AXQA+ADwALwBUAG8AawBlAG4ARABhAHQAYQA+ADwAUwBpAGcAbgBhAHQAdQByAGUAPgA8ACEAWwBDAEQAQQBUAEEAWwBZAFAARABaAEwARQBTAGMARwBvAFQAMgBzACsAdwBuAGcARQAvAGwAeQBmADMAdwBRAEgAYwBNADEAcgBYAC8ATwBBAFYAaQBFAEwANQAxAGsAawB3AD0AXQBdAD4APAAvAFMAaQBnAG4AYQB0AHUAcgBlAD4APAAvAEEAQwA+AA==",
-				}
-				var _JSON = message || _test
-				window.localStorage.setItem('osb',JSON.stringify(_JSON))
+		function importNativeData(message){
+			var _JSON = message
+			if(_JSON) {
+				window.localStorage.clear()
+				window.localStorage.setItem('osb', _JSON)
 			}
-			function saveCalendarSuccess(bool) {
-				// alert(bool)
+		}
+		function saveCalendarSuccess(message) {
+			if (typeof(message) === 'boolean' || typeof(message) === 'string') {
+				message = message
+			} else {
+				message = 'noResponse'
+				let _osbAuth = JSON.parse(window.localStorage.getItem('osb'))
+				_osbAuth['saveToCalendarStatus'] = message
+				window.localStorage.setItem('osb', JSON.stringify(_osbAuth))
 			}
-    	saveCalendarSuccess()
-		
-		//	setTimeout(	importNativeData({hi:'hi'}),1000000)
-			var u = navigator.userAgent
-			var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1 // android缁堢
-			var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/) // ios缁堢
-			if (isAndroid) {
-				window.AppModel.postMessage('importNativeData');
-			} else if (isiOS) {
-				window.webkit.messageHandlers.AppModel.postMessage('importNativeData');
-			}
+		}
+		var u = navigator.userAgent
+		var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1 // android终端
+		var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/) // ios终端
+		if (isAndroid) {
+			window.AppModel.postMessage(JSON.stringify({'message': 'importNativeData'}));
+		} else if (isiOS) {
+			window.webkit.messageHandlers.AppModel.postMessage(JSON.stringify({'message': 'importNativeData'}));
+		}
+
+		importNativeData()
+		saveCalendarSuccess(false)
   </script>
 </html>
