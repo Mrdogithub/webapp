@@ -5,10 +5,13 @@
             <h2>{{title}}</h2>
             <p>{{message}}</p>
             <div class="btn-wrapper" v-show = "showCancel">
-                <Button style="width:266px;height:45px;font-size:14px" type="primary" class="largeBtn" @click = "cancle" >好</Button>
+                <Button style="width:266px;height:45px;font-size:14px" type="primary" class="largeBtn" @click = "cancle" >取消</Button>
             </div>
             <div class="btn-wrapper" v-show="showTryAgain">
-                <Button style="width:266px;height:45px;font-size:14px;color:rgb(45,150,205);background:#fff;border-color:rgb(45,150,205)" type="primary" class="largeBtn" @click = "tryAgain" >重试</Button>
+                <Button style="width:266px;height:45px;font-size:14px;color:rgb(45,150,205);background:#fff;border-color:rgb(45,150,205)" type="primary" class="largeBtn" @click = "tryAgain" >重新提交</Button>
+            </div>
+            <div class="btn-wrapper" v-show="showSuccess">
+                <Button style="width:266px;height:45px;font-size:14px" type="primary" class="largeBtn" @click = "success" >好</Button>
             </div>
         </div>
     </div>
@@ -20,24 +23,27 @@ export default {
         title: String,
         message: String,
         showCancel: Boolean,
-        showTryAgain: Boolean
+        showTryAgain: Boolean,
+        showSuccess: Boolean
     },
     data () {
         return {
             orderConfirmStatus: false,
             showCancel: false,
-            showTryAgain: false
+            showTryAgain: false,
+            showSuccess: false
         }
     },
     methods: {
         cancle () {
             this.orderConfirmStatus = false
-        },
-        showAlert () {
-            this.orderConfirmStatus = true
+            this.$router.push({name: 'myAppointment'})
         },
         tryAgain () {
-
+            this.orderConfirmStatus = false
+        },
+        success () {
+            this.orderConfirmStatus = false
         }
     }
 }
@@ -54,15 +60,15 @@ export default {
         backdrop-filter:blur
         background:rgba(7,17,27,0.8)
         .messageInfoWrapper
-            position:absolute
-            top:0
+            position: relative
+            top:30%
             left:0
             right:0
             bottom:0
             margin:auto
             width:91.2%
-            min-height:230px
-            max-height: 300px;
+            min-height:208px
+            max-height: 260px
             background:rgb(249,252,255)
             border-radius:18px
             &>h2

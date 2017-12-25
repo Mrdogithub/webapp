@@ -2,18 +2,11 @@
 	<div class="myAppointment">
 		<div ref="scroll" class = "scroll listView">
 			<ul>
-				<li class="listViewItem" @click = "showMyAppointmentDetail" v-for = " item in vehicles" :key = 'item.vin' :value = 'item.vin'>
+				<li class="listViewItem" @click = "showMyAppointmentDetail(index)" v-for = " (item, index) in vehicles" :key = 'item.vin' :value = 'item.vin'>
 					<div class="infoContent">
-						<h2 style="font-size:12px">2018/2/1. 19:00</h2>
-						<p style="color:rgb(45,150,205);font-size:14px">onLine Servicing Booking: My Mondeo</p>
-						<span style="color:rgb(149,149,149);font-size:12px">Ongoing request</span>
-					</div>
-				</li>
-				<li class="listViewItem" @click = "showMyAppointmentDetail">
-					<div class="infoContent">
-						<h2 style="font-size:12px">2018/2/1. 19:00</h2>
-						<p style="color:rgb(45,150,205);font-size:14px">onLine Servicing Booking: My Mondeo</p>
-						<span style="color:rgb(149,149,149);font-size:12px">Ongoing request</span>
+						<h2 style="font-size:12px">2017/12/08, 09:00</h2>
+						<p style="color:rgb(45,150,205);font-size:14px">onLine Servicing Booking: Mondeo Hybrid - NH</p>
+						<span style="color:rgb(149,149,149);font-size:12px">Ongoing Request</span>
 					</div>
 				</li>
 			</ul>
@@ -27,22 +20,40 @@ export default {
 	props: {},
 	data () {
 		return {
-			vehicles: []
+			vehicles: [],
+			vin: null
 		}
 	},
 	methods: {
-        showMyAppointmentDetail () {
-            var u = navigator.userAgent
-            var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1 // android终端
-            var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/) // ios终端
-			if (isAndroid) {
-				window.AppModel.postMessage(JSON.stringify({'message': 'gotoAppointmentDetail'}))
-			} else if (isiOS) {
-				window.webkit.messageHandlers.AppModel.postMessage({'message': 'gotoAppointmentDetail'})
-			}
+        showMyAppointmentDetail (index) {
+   //          var u = navigator.userAgent
+   //          var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1 // android终端
+   //          var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/) // ios终端
+			// if (isAndroid) {
+			// 	window.AppModel.postMessage(JSON.stringify({'message': 'gotoAppointmentDetail'}))
+			// } else if (isiOS) {
+			// 	window.webkit.messageHandlers.AppModel.postMessage({'message': 'gotoAppointmentDetail'})
+			// }
             this.$router.push({name: 'orderSummary'})
+            let _osbAuth = JSON.parse(window.localStorage.getItem('osb'))
+			_osbAuth['index'] = index
+			window.localStorage.setItem('osb', JSON.stringify(_osbAuth))
         }
 	},
+	// beforeMount () {
+	// 	let _osbAuth = JSON.parse(window.localStorage.getItem('osb'))
+	// 	for (var i = 0; i < _osbAuth.vehicles.length; i++) {
+	// 		var thisTime = _osbAuth.vehicles[i].value.appointmentTimeAsDate.split(':', 3)
+	// 		var thisT = thisTime[0].replace(/-/g, '/').replace(/T/g, ' , ') + ':' + thisTime[1]
+	// 		console.log(_osbAuth['vehicles'][i], 980)
+	// 		var ccc = _osbAuth['vehicles'][i].split(']')
+	// 		console.log(ccc, 333)
+	// 	}
+	// 	console.log(_osbAuth['vehicles'][i], 960)
+	// 	window.localStorage.setItem('osb', JSON.stringify(_osbAuth))
+	// 	let aaa = JSON.parse(window.localStorage.getItem('osb'))
+	// 	console.log(aaa, 900)
+	// },
 	created () {
 		let _osbAuth = JSON.parse(window.localStorage.getItem('osb'))
 		this.vehicles = _osbAuth.vehicles

@@ -8,7 +8,7 @@
                     <div class="dealerContent">
                         <h2>{{dealerObj.name}}</h2>
                         <p>{{dealerObj.address}}</p>
-                        <a href="tel:dealerObj.OSBPhone">致电经销商</a>
+                        <a :href= "callDealer()">致电经销商</a>
                     </div>
                 </div>
             </div>
@@ -21,7 +21,6 @@
 <script>
 export default {
     props: {
-        'nextRouteName': String
     },
     data () {
        return {
@@ -32,6 +31,9 @@ export default {
     created () {
     },
     methods: {
+        callDealer () {
+            return 'tel:' + this.dealerObj.OSBPhone
+        },
         showDealerDetail (activeDealer, status) {
             this.dealerObj = activeDealer
             this.showDealerInfo = status
@@ -43,11 +45,9 @@ export default {
         },
         goToSelectServiceType () {
             let _self = this.dealerObj
-            var _delaer = {name: _self.name, OSBPhone: _self.OSBPhone, address: _self.address, OSBDealerID: _self.OSBDealerID}
-            var _osbAuth = JSON.parse(window.localStorage.getItem('osb'))
-            alert(1, _osbAuth)
-            var _secOsbAuth = JSON.parse(_osbAuth)
-           _secOsbAuth['chooseDealerParams'] = _delaer
+            let _delaer = {name: _self.name, OSBPhone: _self.OSBPhone, address: _self.address, OSBDealerID: _self.OSBDealerID}
+            let _osbAuth = JSON.parse(window.localStorage.getItem('osb'))
+            _osbAuth['chooseDealerParams'] = _delaer
             window.localStorage.setItem('osb', JSON.stringify(_osbAuth))
             this.$router.push({name: 'selectServiceType'})
         }
@@ -88,7 +88,4 @@ export default {
         bottom:29px
         width:100%
         z-index: 999
-    .dealerInfo .selectBtn .largeBtn
-        width: 90.1333%
-        height: 55px
 </style>

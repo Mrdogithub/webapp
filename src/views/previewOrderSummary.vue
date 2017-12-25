@@ -17,7 +17,7 @@
 				<div class="text-wrapper">
 					<p>{{dealerInformation.name}}</p>
 					<p>{{dealerInformation.address}}</p>
-					<a href="tel:dealerInformation.phone">致电经销商</a>
+					<a :href= "callDealer()">致电经销商</a>
 				</div>
 			</div>
 			<div class="input-wrapper">
@@ -33,11 +33,11 @@
 			</div>
 			<div class="input-wrapper">
 				<p class="input-title">当前里程</p>
-				<Input v-model="currentMileage"   disabled placeholder="Enter your Odometer" class="input-item"></Input>
+				<Input v-model="currentMileage" disabled placeholder="Enter your Odometer" class="input-item"></Input>
 			</div>
 			<div class="input-wrapper">
 				<p class="input-title">服务类型</p>
-				<Input v-model="serviceType" class="textAreaSize" placeholder="Any other service..."></Input>
+				<Input v-model="serviceType" class="textAreaSize" disabled placeholder="Any other service..."></Input>
 			</div>
 			<div class="input-wrapper">
 				<p class="input-title">服务顾问</p>
@@ -49,7 +49,7 @@
 			</div>
 			<div class="input-wrapper">
 				<p class="input-title">预约时间</p>
-				<Input v-model="appointmentTime" disabled class="textAreaSize" placeholder="Any other service..."></Input>
+				<Input v-model="appointmentTimeStandard" disabled class="textAreaSize" placeholder="Any other service..."></Input>
 			</div>		
 			<div class="largeBtnWrapper" style="margin-top:22px;margin-bottom:51px">
 				<div>
@@ -61,7 +61,7 @@
 			</div>
 		</div>
 	</div>
-	<requestconfirmation ref = "requestconfirmationHook" @resubmit = "submitAgain"></requestconfirmation>
+	<requestconfirmation ref = "requestconfirmationHook" @resubmit = "submitFn"></requestconfirmation>
 </div>
 </template>
 
@@ -115,12 +115,7 @@ export default {
 					headers: {
 						'Auth-token': '',
 						'Application-id': ''
-					},
-					'cors.allowOrigin': '*',
-					'cors.supportedMethods': 'CONNECT, DELETE, GET, HEAD, OPTIONS, POST, PUT, TRACE, PATCH',
-					'cors.supportedHeaders': 'token,Accept, Origin, X-Requested-With, Content-Type, Last-Modified',
-					'cors.exposedHeaders': 'Set-Cookie',
-					'cors.supportsCredentials': 'true'
+					}
 				}
 			}
 		}
@@ -132,7 +127,7 @@ export default {
 	created () {
 		let _osbAuth = JSON.parse(window.localStorage.getItem('osb'))
 		this.modelYear = _osbAuth.selectedVehicle.modelYear
-		this.modelName = _osbAuth.selectedVehicle.modelName.toLowerCase().replace(' ', '-').replace(/\s*/g, '')
+		this.modelName = _osbAuth.selectedVehicle.modelName.toLowerCase().replace(' ', '-').replace(/\s*/g, '').replace('--', '-')
 		console.log(this.modelName)
 		this.generateUrlForVehicle = 'https://www.fordpass.com.cn/content/dam/assets/cn/ford/vehicle/' + this.modelYear + '/' + this.modelYear + '-ford-' + this.modelName + '-s.png'
 		console.log(this.generateUrlForVehicle + 'this.generateUrlForVehicle')
@@ -143,20 +138,38 @@ export default {
 		this.currentMileage = _osbAuth.selectServiceTypeParams.customer_mileage
 		this.serviceConsultant = _osbAuth.selectServiceTypeParams.customer_consultant
 		this.note = _osbAuth.selectServiceTypeParams.customer_note
-		this.appointmentTime = _osbAuth.selectDateAndTime.apptTime
 		this.vehicleServicing = {name: _osbAuth.selectedVehicle.modelName, vin: _osbAuth.selectedVehicle.vin}
 		this.dealerInformation = {name: _osbAuth.chooseDealerParams.name, address: _osbAuth.chooseDealerParams.address, phone: _osbAuth.chooseDealerParams.OSBPhone, OSBDealerID: _osbAuth.chooseDealerParams.OSBDealerID}
 		this.serviceType = _osbAuth.selectServiceTypeParams.customer_serviceType
+		let appointmentTime = _osbAuth.selectDateAndTime.apptTime
+        let appointmentTimeStamp = new Date(appointmentTime.split('-').join('/').replace('T', ' ')).getTime()
+        let date = new Date(appointmentTimeStamp) // Sat Dec 16 2017 11:00:00 GMT+0800 (China Standard Time)
+        let W = date.getDay()
+        switch (date.getDay()) {
+            case 0:W = '周日,'; break
+            case 1:W = '周一,'; break
+            case 2:W = '周二,'; break
+            case 3:W = '周三,'; break
+            case 4:W = '周四,'; break
+            case 5:W = '周五,'; break
+            case 6:W = '周六,'; break
+        }
+        console.log(W)
+        let M = date.getMonth() + 1 + '月'
+        let D = date.getDate() + '日' + ' '
+        let h = date.getHours() + ':'
+        let m = date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes()
+        this.appointmentTimeStandard = W + M + D + h + m
 	},
 	methods: {
+		callDealer () {
+			return 'tel:' + this.dealerInformation.phone
+		},
 		showServiceDetail () {
 			console.log('ss')
 		},
 		modifyOrder () {
 			this.$router.push({name: 'selectDealerOption', params: this.$route.params})
-		},
-		submitAgain () {
-			this.previewOrderSummaryStatus = true
 		},
 		submitFn () {
 			let showAjaxStatus = true
@@ -173,7 +186,7 @@ export default {
 					'oldServices': null,
 					'voucherCode': null,
 					'customerAnnotation': null,
-					'serviceAdvisorId': this.serviceConsultant,
+					'serviceAdvisorId': this.serviceConsultant === '其他' ? '' : this.serviceConsultant,
 					'customer': {
 						'name': this.contactName,
 						'phone': this.mobileNumber
@@ -186,13 +199,13 @@ export default {
 					}
 				}
 			this.$http.post('https://servicebooking-service-qa.apps.cl-cn-east-preprod01.cf.ford.com/api/v1/bookings', this.submitOrderParams.params, this.submitOrderParams.headerContent).then((response) => {
+				this.previewOrderSummaryStatus = false
 				response = JSON.parse(response.bodyText)
 				let showPostOverLay = true
-				this.previewOrderSummaryStatus = false
 				this.$refs.requestconfirmationHook.showRequestConfirmationStatus(showPostOverLay, showAjaxStatus)
 			}, (response) => {
-				let showPostOverLay = true
 				this.previewOrderSummaryStatus = false
+				let showPostOverLay = true
 				this.$refs.requestconfirmationHook.showRequestConfirmationStatus(showPostOverLay, !showAjaxStatus)
 			})
 		}

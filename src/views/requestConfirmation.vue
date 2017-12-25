@@ -14,16 +14,15 @@
 					<a href="tel:requestConfirmationData.phone">致电经销商:{{requestConfirmationData.phone}}</a>
 				</p>
 				<p class="text-content"> 
-					预约时间:
-					{{requestConfirmationData.chooseDate}}{{requestConfirmationData.chooseTime}}
+					预约时间:{{appointmentTime}}
 				</p>
 			</div>	
 			<div class="largeBtnWrapper">
 				<div>
-					<Button type="primary"  class="largeBtn" @click="saveToCalendar">设置提醒</Button>
+					<Button type="primary" class="largeBtn" @click="saveToCalendar">设置提醒</Button>
 				</div>
 				<div class="btn-wrapper modifyOrder">
-					<Button type="primary" class="largeBtn" @click = "goToMyAppointment">好</Button>
+						<Button type="primary" class="largeBtn" @click = "goToMyAppointment">好</Button>
 				</div>
 			</div>
 		</div>
@@ -45,8 +44,8 @@
 				</div>
 			</div>
 		</div>
-		</div>
-		<alert v-bind="{title:this.title, message: this.message,showCancel: showCancelBtn,showTryAgain:showTryAgainStatus}" ref = "alertHook"></alert>
+		<alert v-bind="{title: this.title, message: this.message,showCancel: this.showCancel,showTryAgain:this.showTryAgain,showSuccess:this.showSuccess}" ref = "alertHook"></alert>
+	</div>
 </div>
 </template>
 
@@ -58,14 +57,22 @@ export default {
 		return {
 			requestConfirmationData: {},
 			requestConfirmationStatus: false,
+			appointmentTime: '',
 			title: '',
-			message: ''
+			message: '',
+			showCancel: false,
+			showTryAgain: false,
+			showSuccess: false
 		}
     },
     components: {
 		'bar': bar,
 		'alert': alert
-    },
+	},
+	created () {
+		let _osbAuth = JSON.parse(window.localStorage.getItem('osb'))
+		this.appointmentTime = _osbAuth.selectDateAndTime.apptTime
+	},
 	methods: {
 		showRequestConfirmationStatus (status, resultStatus) {
 			this.requestConfirmationStatus = status
@@ -73,94 +80,114 @@ export default {
 		},
 		goToDashboard () {
 			var isAndroid = ''
-				var isiOS = ''
-				var u = navigator.userAgent
-				isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1 // android终端
-				isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+ Mac OS X/) // ios终端
-				if (isAndroid) {
-					window.AppModel.postMessage(JSON.stringify({'message': 'gotoDashboard'}))
-				} else if (isiOS) {
-					window.webkit.messageHandlers.AppModel.postMessage({'message': 'gotoDashboard'})
-				}
+			var isiOS = ''
+			var u = navigator.userAgent
+			isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1 // android终端
+			isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+ Mac OS X/) // ios终端
+			if (isAndroid) {
+				window.AppModel.postMessage(JSON.stringify({'message': 'gotoDashboard'}))
+			} else if (isiOS) {
+				window.webkit.messageHandlers.AppModel.postMessage({'message': 'gotoDashboard'})
+			}
 		},
 		goToMyAppointment () {
-				this.$router.push({name: 'myAppointment'})
-				var isAndroid = ''
-				var isiOS = ''
-				var u = navigator.userAgent
-				isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1 // android终端
-				isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+ Mac OS X/) // ios终端
-				if (isAndroid) {
+			this.$router.push({name: 'myAppointment'})
+
+			let _osbAuth = JSON.parse(window.localStorage.getItem('osb'))
+			let modifyOrderId = _osbAuth.vehicles.modifyOrderId
+			console.log('orderId:' + modifyOrderId)
+			var isAndroid = ''
+			var isiOS = ''
+			var u = navigator.userAgent
+			isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1 // android终端
+			isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+ Mac OS X/) // ios终端
+			if (isAndroid) {
+				if (modifyOrderId) {
+					window.AppModel.postMessage(JSON.stringify({'message': 'modifyOrderSuccess'}))
+				} else {
 					window.AppModel.postMessage(JSON.stringify({'message': 'createOrderSuccess'}))
-				} else if (isiOS) {
-					window.webkit.messageHandlers.AppModel.postMessage({'message': 'createOrderSuccess'})
 				}
+			} else if (isiOS) {
+				if (modifyOrderId) {
+					window.AppModel.postMessage(JSON.stringify({'message': 'modifyOrderSuccess'}))
+				} else {
+					window.AppModel.postMessage(JSON.stringify({'message': 'createOrderSuccess'}))
+				}
+			}
 		},
 		reSubmit () {
-			console.log('re')
-			this.requestConfirmationStatus = false
-			this.$emit('resubmit', true)
+			console.log('resubmit')
+			this.$emit('resubmit')
 		},
 		saveToCalendar () {
-				let _osbAuth = JSON.parse(window.localStorage.getItem('osb'))
-				console.log(1, _osbAuth)
-				this.showCancelBtn = true
-				this.showTryAgainStatus = true
-				this.title = '您已设置提醒'
-				this.message = '您预约的服务将被自动添加至您的日历中。'
-				this.$refs.alertHook.showAlert()
-				console.log('_osbAuth.selectDateAndTime.apptTime')
-				console.log(_osbAuth.selectDateAndTime.apptTime.split('-').join('/').replace('T', ' '))
-                var startTimeStamp = new Date(_osbAuth.selectDateAndTime.apptTime.split('-').join('/').replace('T', ' ')).getTime() // 开始时间戳
-				console.log('save to calendar-----')
-				console.log(startTimeStamp)
-				var startTime = new Date(startTimeStamp) // Sat Dec 16 2017 11:00:00 GMT+0800 (China Standard Time)
-				console.log('save to calendar again')
-				console.log(startTimeStamp)
-				var startY = startTime.getFullYear() + '-'
-				var startM = (startTime.getMonth() + 1 < 10 ? '0' + (startTime.getMonth() + 1) : startTime.getMonth() + 1) + '-'
-				var startD = (startTime.getDate() < 10 ? '0' + startTime.getDate() : startTime.getDate()) + ' '
-				var starth = (startTime.getHours() < 10 ? '0' + startTime.getHours() : startTime.getHours()) + ':'
-				var startm = (startTime.getMinutes() < 10 ? '0' + startTime.getMinutes() : startTime.getMinutes()) + ':'
-				var starts = (startTime.getSeconds() < 10 ? '0' + startTime.getSeconds() : startTime.getSeconds())
-				this.start = startY + startM + startD + starth + startm + starts
-				var endTime = new Date(startTimeStamp + 1800000) // China Standard Time
-				var endY = endTime.getFullYear() + '-'
-				var endM = (endTime.getMonth() + 1 < 10 ? '0' + (endTime.getMonth() + 1) : endTime.getMonth() + 1) + '-'
-				var endD = (endTime.getDate() < 10 ? '0' + endTime.getDate() : endTime.getDate()) + ' '
-				var endh = (endTime.getHours() < 10 ? '0' + endTime.getHours() : endTime.getHours()) + ':'
-				var endm = (endTime.getMinutes() < 10 ? '0' + endTime.getMinutes() : endTime.getMinutes()) + ':'
-				var ends = (endTime.getSeconds() < 10 ? '0' + endTime.getSeconds() : endTime.getSeconds())
-				this.end = endY + endM + endD + endh + endm + ends
-				var isAndroid = ''
-				var isiOS = ''
-				var u = navigator.userAgent
-				isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1 // android终端
-				isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+ Mac OS X/) // ios终端
-
-				console.log(this.start)
-				console.log(this.end)
-				if (isAndroid) {
-					window.AppModel.postMessage(JSON.stringify({
-						'message': 'saveToCalendar',
-						'data': {
-							'startDate': this.start,
-							'endDate': this.end,
-							'title': '预约时间',
-							'content': '预约内容'
-						}
-					}))
-				} else if (isiOS) {
-					window.webkit.messageHandlers.AppModel.postMessage({
-						'message': 'saveToCalendar',
-						'data': {
-							'startDate': this.start,
-							'endDate': this.end,
-							'title': '预约时间',
-							'content': '预约内容'
-						}
-					})
+			let _osbAuth = JSON.parse(window.localStorage.getItem('osb'))
+			let saveToCalendarStatus = _osbAuth['saveToCalendarStatus']
+			console.log(saveToCalendarStatus)
+            setTimeout(() => {
+				if (saveToCalendarStatus === 'noResponse') {
+					this.$refs.alertHook.orderConfirmStatus = false
+					console.log('no-response')
+				} else if (saveToCalendarStatus === true || saveToCalendarStatus === 'true') {
+					this.$refs.alertHook.orderConfirmStatus = true
+					this.showSuccess = true
+					this.title = '您已设置提醒'
+					this.message = '您预约的服务将被自动添加至您的日历中'
+					_osbAuth['saveToCalendarStatus'] = 'noResponse'
+				} else if (saveToCalendarStatus === false || saveToCalendarStatus === 'false') {
+					this.$refs.alertHook.orderConfirmStatus = true
+					this.showCancel = true
+					this.showTryAgain = true
+					this.title = '设置提醒失败'
+					this.message = '无法将您的服务提醒保存至您的日历'
+					_osbAuth['saveToCalendarStatus'] = 'noResponse'
 				}
+			}, 1000)
+			let startTimeStamp = new Date(this.appointmentTime.split('-').join('/').replace('T', ' ')).getTime() // 开始时间戳
+			let startTime = new Date(startTimeStamp) // Sat Dec 16 2017 11:00:00 GMT+0800 (China Standard Time)
+			let startY = startTime.getFullYear() + '-'
+			let startM = (startTime.getMonth() + 1 < 10 ? '0' + (startTime.getMonth() + 1) : startTime.getMonth() + 1) + '-'
+			let startD = (startTime.getDate() < 10 ? '0' + startTime.getDate() : startTime.getDate()) + ' '
+			let starth = (startTime.getHours() < 10 ? '0' + startTime.getHours() : startTime.getHours()) + ':'
+			let startm = (startTime.getMinutes() < 10 ? '0' + startTime.getMinutes() : startTime.getMinutes()) + ':'
+			let starts = (startTime.getSeconds() < 10 ? '0' + startTime.getSeconds() : startTime.getSeconds())
+			this.start = startY + startM + startD + starth + startm + starts
+			console.log(this.start)
+			let endTime = new Date(startTimeStamp + 1800000) // China Standard Time
+			let endY = endTime.getFullYear() + '-'
+			let endM = (endTime.getMonth() + 1 < 10 ? '0' + (endTime.getMonth() + 1) : endTime.getMonth() + 1) + '-'
+			let endD = (endTime.getDate() < 10 ? '0' + endTime.getDate() : endTime.getDate()) + ' '
+			let endh = (endTime.getHours() < 10 ? '0' + endTime.getHours() : endTime.getHours()) + ':'
+			let endm = (endTime.getMinutes() < 10 ? '0' + endTime.getMinutes() : endTime.getMinutes()) + ':'
+			let ends = (endTime.getSeconds() < 10 ? '0' + endTime.getSeconds() : endTime.getSeconds())
+			this.end = endY + endM + endD + endh + endm + ends
+			console.log(this.end)
+
+			var isAndroid = ''
+			var isiOS = ''
+			var u = navigator.userAgent
+			isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1 // android终端
+			isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+ Mac OS X/) // ios终端
+			if (isAndroid) {
+				window.AppModel.postMessage(JSON.stringify({
+					'message': 'saveToCalendar',
+					'data': {
+						'startDate': this.start,
+						'endDate': this.end,
+						'title': '预约时间',
+						'content': '预约内容'
+					}
+				}))
+			} else if (isiOS) {
+				window.webkit.messageHandlers.AppModel.postMessage({
+					'message': 'saveToCalendar',
+					'data': {
+						'startDate': this.start,
+						'endDate': this.end,
+						'title': '预约时间',
+						'content': '预约内容'
+					}
+				})
+			}
 		}
 	}
 }

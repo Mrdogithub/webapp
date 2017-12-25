@@ -1,20 +1,20 @@
 <template>
 <div class="chooseDealerOption">
 	<bar v-bind="{ 'title': '选择经销商', 'allIconStatus': true, 'goBackIcon': true}"  @icon-switch-status = "switchIcon(listView)" ref = "barComponentHook"></bar>
-	<div style="position:relative;top:50px">
+	<div style="position:relative;top:58px">
 		<tab @watch-tab-status = "switchTab"></tab>
 		<transition name="fade">
 			<Row v-show = "showChooseCity">
 					<Col span="12">
-						<Select v-model="provinceValue"   @on-change = "selectProvince(listView)">
+						<Select v-model="provinceValue"  @on-change = "selectProvince(listView)">
 							<Option v-for="item in provinceList" :value="item.p" :key="item.p"  >{{ item.p }}</Option>
 						</Select>
 					</Col>
 					<Col span="12">
-						<Select v-model="cityValue"  @on-change = "selectCity(listView)">
+						<Select v-model="cityValue" @on-change = "selectCity(listView)">
 							<Option v-for="item in cityList" :value="item" :key="item">{{ item }}</Option>
 						</Select>
-					</Col>
+					</Col> 
 			</Row>
 		</transition>
 		<transition name="fade">
@@ -62,7 +62,7 @@
 					<div class="infoContent">
 						<h2>{{item._name}}</h2>
 						<p>{{item._address}}</p>
-						<a href="tel:item.OSBPhone" @click.stop = 'stopPop'>致电经销商</a>
+						<a :href= "callDealer(item.OSBPhone)" @click.stop = 'stopPop'>致电经销商</a>
 					</div>
 					<div class="distances">
 						<span>{{(item._distance/1000).toFixed(2)}} km</span>
@@ -72,7 +72,7 @@
 		</div>
 	</transition>
 	<transition name="fade">
-		<dealer-info ref = "showDealer" v-bind="{ 'dealerObj': activeDealer, 'nextRouteName': 'selectServiceType'}" @dealer-switch-status = "switchDealerInfo"></dealer-info>
+		<dealer-info ref = "showDealer" v-bind="{ 'dealerObj': activeDealer}" @dealer-switch-status = "switchDealerInfo"></dealer-info>
 	</transition>
 </div>
 </template>
@@ -142,6 +142,9 @@ export default {
 		}
 	},
 	methods: {
+		callDealer (OSBPhone) {
+			return 'tel:' + OSBPhone
+		},
 		switchTab (activeTab) {
 			this.hideDealerInfo()
 			switch (activeTab) {
@@ -211,6 +214,8 @@ export default {
 			this.noDealerByQueryText = false
 			this.noDealerByQueryCity = false
 			this.noDealerByQueryTextInMap = false
+			// let _filter = 'OSBFlag:True'
+			// this.getDealer(this.provinceValue, _filter)
 			for (let i = 0; i < this.allCity.length; i++) {
 				if (this.allCity[i].Province === this.provinceValue) {
 					let _cityArray = this.allCity[i].City.split('%')
@@ -223,7 +228,7 @@ export default {
 			this.noDealerByQueryText = false
 			this.noDealerByQueryCity = false
 			this.noDealerByQueryTextInMap = false
-			let _filter = 'OSBFlag:True+JVFlag:CAF+_city:' + this.cityValue
+			let _filter = 'OSBFlag:True'
 			this.getDealer(this.cityValue, _filter)
 		},
 		selectDealer (e) {
@@ -240,7 +245,7 @@ export default {
 			this.noDealerByQueryText = false
 			this.noDealerByQueryCity = false
 			this.noDealerByQueryTextInMap = false
-			let _filter = '_name:' + this.queryDealerByTextValue + '+OSBFlag:True+JVFlag:CAF'
+			let _filter = '_name:' + this.queryDealerByTextValue + '+OSBFlag:True'
 			this.cityValue = '全国'
 			this.getDealer(this.cityValue, _filter)
 		},
@@ -251,18 +256,12 @@ export default {
 			let _osbAuth = JSON.parse(window.localStorage.getItem('osb'))
 			_osbAuth['showDealerInfo'] = this.activeDealer
 			window.localStorage.setItem('osb', JSON.stringify(_osbAuth))
-			this.$refs.showDealer.showDealerDetail(this.activeDealer, true)
+			if (this.activeDealer.length) {
+				this.$refs.showDealer.showDealerDetail(this.activeDealer, true)
+			}
 		},
 		init (city, result) {
-			console.log(city + 'xxx')
 			this.hideDealerInfo()
-			// let _osbAuth = JSON.parse(window.localStorage.getItem('osb'))
-			// _osbAuth['mapResult'] = result
-			// _osbAuth['provinceValue'] = this.provinceValue
-			// _osbAuth['cityValue'] = this.cityValue
-			// window.localStorage.setItem('osb', JSON.stringify(_osbAuth))
-			console.log('-------')
-			console.log(1, result)
 			let _city = city === '全国' ? '中国' : city
 			map.setCity(_city)
 			let lnglat = new AMap.LngLat(121.33976, 31.19609)
@@ -311,6 +310,7 @@ export default {
 		_that = this
 		map.plugin('AMap.Geolocation', function () {
 			let geolocation = new AMap.Geolocation({
+				useNative: true, // 是否使用高德定位sdk用来辅助优化定位效果，默认：false
 				enableHighAccuracy: true, // 是否使用高精度定位，默认:true
 				timeout: 10000,          // 超过10秒后停止定位，默认：无穷大
 				maximumAge: 0,           // 定位结果缓存0毫秒，默认：0
@@ -321,20 +321,23 @@ export default {
 				showMarker: true,        // 定位成功后在定位到的位置显示点标记，默认：true
 				showCircle: true,        // 定位成功后用圆圈表示定位精度范围，默认：true
 				panToLocation: true,     // 定位成功后将定位到的位置作为地图中心点，默认：true
-				zoomToAccuracy: true      // 定位成功后调整地图视野范围使定位位置及精度范围视野内可见，默认：false
+				zoomToAccuracy: true     // 定位成功后调整地图视野范围使定位位置及精度范围视野内可见，默认：false
 			})
 			map.addControl(geolocation)
 			geolocation.getCurrentPosition()
-			console.log('_that.dealerAroundParams.params.center')
+			// _that.dealerAroundParams.params.center = geolocation.getCurrentPosition()
 			AMap.event.addListener(geolocation, 'complete', function (e) {
+				// alert(geolocation)
 				console.log(1, e)
-				_that.dealerParams.params.city = e.addressComponent.city !== '' ? e.addressComponent.city : e.addressComponent.province.replace('市', '')
+				_that.$refs.barComponentHook.errorCloseFn(e.message, false)
+				_that.dealerParams.params.city = e.addressComponent.province
 				_that.provinceValue = e.addressComponent.province.replace('市', '')
-				var _filter = 'OSBFlag:True+JVFlag:CAF'
-				_that.getDealer(_that.dealerParams.params.city, _filter)
+				_that.cityValue = _that.provinceValue
+				_that.getDealer() // 传入两个参数  一个城市，一个OSBFlag
+				_that.$refs.barComponentHook.errorCloseFn(e.message, false)
 			}) // 返回定位信息
 			AMap.event.addListener(geolocation, 'error', function (e) {
-				console.log('xxxxxxx')
+				// alert(geolocation)
 				console.log(1, e)
 				_that.$refs.barComponentHook.errorCloseFn(e.message, true)
 			}) // 返回定位出错信息
@@ -378,6 +381,8 @@ export default {
 		background-color: rgb(45,150,205)
 		border-color: rgb(45,150,205)
 		z-index: 999
+		width: 90%
+		height: 55px
 	.chooseDealerOption .ivu-select-dropdown
 		margin:0
 		border-radius: 0px
@@ -400,7 +405,7 @@ export default {
 		font-size:20px
 	.chooseDealerOption .mapView ,.chooseDealerOption .listView
 		position: absolute
-		top: 150px
+		top: 163px
 		bottom: 0px
 		width: 100%
 		overflow: hidden
@@ -486,4 +491,10 @@ export default {
 		&>p
 			color:rgb(51 51 51)
 			font-size:14px
+	.chooseDealerOption .ivu-select-single .ivu-select-selection .ivu-select-placeholder, .chooseDealerOption .ivu-select-single .ivu-select-selection .ivu-select-selected-value
+		height: 48px
+		line-height: 48px
+	.chooseDealerOption .noDealerByQueryCity
+		position: absolute
+		top: 100px
 </style>

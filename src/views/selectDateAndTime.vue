@@ -62,6 +62,9 @@
 			'bar': bar,
 			'timeInfo': timeInfo
 		},
+		mounted () {
+           this.handleChange(this.chooseDate)
+		},
 		created () {
 			var tomorrowStamp = Date.now() + 56400000
 			var tomorrow = new Date(tomorrowStamp) // Sat Dec 16 2017 11:00:00 GMT+0800 (China Standard Time)
@@ -95,6 +98,9 @@
 </script>
 
 <style lang="stylus" rel="stylesheet/stylus">
+	.selectDateAndTime .content-wrapper
+		position: relative
+		top: 58px
 	.selectDateAndTime .date-title
 		height:50px
 		font-size:14px
@@ -112,11 +118,11 @@
 		margin-top:-30px
 	.selectDateAndTime .ivu-date-picker-rel
 		display:none
-	.ivu-select-dropdown
+	.selectDateAndTime .ivu-select-dropdown
 		position:unset !important
 	.selectDateAndTime .ivu-picker-panel-body
 		width:100%
-	.selectDateAndTime .ivu-date-picker-cells
+    .selectDateAndTime .ivu-date-picker-cells
 		width:97%
 		margin:0 auto
 	.selectDateAndTime .ivu-date-picker-cells-header
@@ -135,13 +141,13 @@
 		height: 25px
 		line-height: 25px
 		transition: all 0s
-	.selectDateAndTime .ivu-date-picker-cells-cell-selected em, .selectDateAndTime .ivu-date-picker-cells-cell-selected:hover em
+	.selectDateAndTime .ivu-date-picker-cells-cell-selected em, .ivu-date-picker-cells-cell-selected:hover em
 		background: rgb(45,150,203)
 		color: #fff
 		border-radius: 50% !important
 	.selectDateAndTime .ivu-date-picker-cells-cell
 		margin:0px 2%
-	.selectDateAndTime .select-time
+    .selectDateAndTime .select-time
 		height:50px
 		padding: 0 10px
 		font-size:14px
@@ -154,7 +160,7 @@
 	.selectDateAndTime .ivu-icon-chevron-down
 		float:right
 		line-height:50px
-	span.ivu-date-picker-cells-cell-disabled, span.ivu-date-picker-cells-cell-disabled:hover
+	.selectDateAndTime span.ivu-date-picker-cells-cell-disabled, span.ivu-date-picker-cells-cell-disabled:hover
 		background:none
 	.selectDateAndTime .ivu-date-picker-cells-cell-prev-month em, .ivu-date-picker-cells-cell-next-month em
 		color:black
@@ -176,7 +182,7 @@
 		line-height: 20px
 		text-align: left
 		padding: 10px
-	span.ivu-date-picker-cells-cell
+	.selectDateAndTime span.ivu-date-picker-cells-cell
 		width:10%
 		height:10%
 </style>

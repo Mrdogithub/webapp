@@ -106,7 +106,7 @@ export default {
             color:#fff
     .bar-wrapper .errorMessageWrapper
         width:100%
-        min-height:55px
+        min-height:56px
         position:absolute
         z-index: 6
         background:rgb(207,2,27)

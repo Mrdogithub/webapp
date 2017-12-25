@@ -64,7 +64,7 @@ import BuildScroll from 'better-scroll'
 		width:100%
 		height:100%
 		left:0
-		z-index:100
+		z-index:999
 		overflow:auto
 		backdrop-filter:blur
 		background:rgba(7,17,27,0.8)

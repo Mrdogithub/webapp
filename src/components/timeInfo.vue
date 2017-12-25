@@ -4,8 +4,8 @@
             <div class="timeInfoOverlay"></div>
             <div class="timeInfoWrapper" >
                 <div class="timeInfoBtn">
-                    <a href="javascript:void(0)" @click="cancel">取消 </a>
-                    <a href="javascript:void(0)" @click="done">完成</a>
+                    <a @click.stop="cancel">取消 </a>
+                    <a @click.stop="done">完成</a>
                 </div>
                 <div class="timeContentWrapper">
                     <div class="timeContent">

@@ -53,15 +53,14 @@
 		</div>
 		<div class="input-wrapper selectSerivceTypeTextArea">
 			<p class="input-title">注意事项</p>
-			<Input v-bind:class="{ 'maxlengthError': note.length >200}" v-model="note"  type="textarea" class="textAreaSize" placeholder="您是否需要其他服务……">	
+			<Input v-bind:class="{ 'maxlengthError': note.length >200}" v-model="note" maxlength="200" type="textarea" class="textAreaSize" placeholder="您是否需要其他服务……">	
 			</Input>
 			<span style="float:right;margin-right:25px" v-bind:class="{ 'errorNumber': note.length >200}">{{note.length}} /200</span>
 		</div>
+		<div class="largeBtnWrapper" v-bind:class="{ 'submitDisabled':!onSubmitFlag}">
+			<Button type="primary" class="largeBtn" @click = "goToSelectDayAndTime()">请选择服务日期和时段</Button>
+		</div>
   	</div>
-	<div class="largeBtnWrapper" v-bind:class="{ 'submitDisabled':!onSubmitFlag}">
-		<Button type="primary" class="largeBtn" @click = "goToSelectDayAndTime()">请选择服务日期和时段</Button>
-	</div>
-
 </div>
 </template>
 
@@ -72,7 +71,7 @@ export default {
     props: {},
 	data () {
 		return {
-			listData: [	{ 'id': '1', 'name': '张三' }, { 'id': 'CF3225001000', 'name': '杜鹏飞' }, { 'id': 'CF3225001409', 'name': '毛玉亭' }, { 'id': 'CF3225001409', 'name': '毛玉亭' }, { 'id': 'CF3225001409', 'name': '毛玉亭' }, { 'id': 'CF3225001409', 'name': '毛玉亭' }, { 'id': 'CF3225001409', 'name': '毛玉亭' }, { 'id': 'CF3225001409', 'name': '毛玉亭' }, { 'id': 'CF3225001409', 'name': '毛玉亭' }, { 'id': 'CF3225001409', 'name': '毛玉亭' }, { 'id': 'CF3225001409', 'name': '毛玉亭' }, { 'id': 'CF3225001409', 'name': '毛玉亭' } ],
+			listData: [],
 			Hidden: false,
 			serviceType: '',
 			name: '',
@@ -164,12 +163,13 @@ export default {
     },
 	methods: {
 		getServiceAdvisors () {
-			this.$http.get('https://servicebooking-service-qa.apps.cl-cn-east-preprod01.cf.ford.com/api/v2/dealers/' + this.serviceAdvisorsParams.params.OSBDealerID + '/serviceadvisors', this.serviceAdvisorsParams.headersContent).then((response) => {
-				response = JSON.parse(response.bodyText)
-				console.log(1, response)
-			}, (response) => {
-				// 响应错误回调
-			})
+			this.listData = [{'id': '0', 'name': '其他'}, {'id': '1', 'name': '张三'}, {'id': 'CF3225001000', 'name': '杜鹏飞'}]
+			// this.$http.get('https://servicebooking-service-qa.apps.cl-cn-east-preprod01.cf.ford.com/api/v2/dealers/' + this.serviceAdvisorsParams.params.OSBDealerID + '/serviceadvisors', this.serviceAdvisorsParams.headersContent).then((response) => {
+			// 	response = JSON.parse(response.bodyText)
+			// 	console.log(1, response)
+			// }, (response) => {
+			// 	// 响应错误回调
+			// })
 		},
 		showError () {
 			if (this.phoneNumber.length < 11) {
@@ -211,6 +211,9 @@ export default {
 }
 </script>
 <style lang="stylus" rel="stylesheet/stylus">
+	.selectServiceType .content-wrapper
+		position: relative
+		top: 60px
 	.selectServiceType .largeBtnWrapper
 		margin-top:50px
 		margin-bottom:50px
@@ -316,6 +319,13 @@ export default {
 		border-color: rgb(193,193,193)
 		font-size:14px
 		color:#fff
-		
+	.selectServiceType .ivu-input:hover 
+		border-top-color: none !important
+		border-bottom-color: none !important
+	.selectServiceType .ivu-input:focus, .selectServiceType .ivu-input:hover
+		border-color: none !important
+	.selectServiceType .ivu-input:focus !important
+		box-shadow: none !important
+		outline: 0 !important
 </style>
 
