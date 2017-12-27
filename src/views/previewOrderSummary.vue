@@ -37,23 +37,23 @@
 			</div>
 			<div class="input-wrapper">
 				<p class="input-title">服务类型</p>
-				<Input v-model="serviceType" class="textAreaSize" disabled placeholder="Any other service..."></Input>
+				<Input v-model="serviceType" class="textAreaSize" disabled ></Input>
 			</div>
 			<div class="input-wrapper">
 				<p class="input-title">服务顾问</p>
-				<Input v-model="serviceConsultant" disabled class="textAreaSize" placeholder="Any other service..."></Input>
+				<Input v-model="serviceConsultant" disabled class="textAreaSize" placeholder=""></Input>
 			</div>
 			<div class="input-wrapper">
 				<p class="input-title">注意事项</p>
-				<Input v-model="note" disabled class="textAreaSize" placeholder="Any other service..."></Input>
+				<Input v-model="note" disabled class="textAreaSize" placeholder=""></Input>
 			</div>
 			<div class="input-wrapper">
 				<p class="input-title">预约时间</p>
-				<Input v-model="appointmentTimeStandard" disabled class="textAreaSize" placeholder="Any other service..."></Input>
+				<Input v-model="appointmentTimeStandard" disabled class="textAreaSize" placeholder=""></Input>
 			</div>		
 			<div class="largeBtnWrapper" style="margin-top:22px;margin-bottom:51px">
 				<div>
-					<Button type="primary"  class="largeBtn" @click="submitFn">提交</Button>
+					<Button type="primary"  class="largeBtn" @click="submitFn" v-bind:disabled="submitBtnStatus">提交</Button>
 				</div>
 				<div class="btn-wrapper modifyOrder">
 					<Button type="primary"  class="largeBtn" @click="modifyOrder">修改订单</Button>
@@ -117,7 +117,8 @@ export default {
 						'Application-id': ''
 					}
 				}
-			}
+			},
+			submitBtnStatus: false
 		}
     },
     components: {
@@ -136,7 +137,7 @@ export default {
 		this.contactName = _osbAuth.selectServiceTypeParams.customer_name
 		this.mobileNumber = _osbAuth.selectServiceTypeParams.customer_phoneNumber
 		this.currentMileage = _osbAuth.selectServiceTypeParams.customer_mileage
-		this.serviceConsultant = _osbAuth.selectServiceTypeParams.customer_consultant
+		this.serviceConsultant = _osbAuth.selectServiceTypeParams.customer_consultant === '请选择' ? '其他' : _osbAuth.selectServiceTypeParams.customer_consultant
 		this.note = _osbAuth.selectServiceTypeParams.customer_note
 		this.vehicleServicing = {name: _osbAuth.selectedVehicle.modelName, vin: _osbAuth.selectedVehicle.vin}
 		this.dealerInformation = {name: _osbAuth.chooseDealerParams.name, address: _osbAuth.chooseDealerParams.address, phone: _osbAuth.chooseDealerParams.OSBPhone, OSBDealerID: _osbAuth.chooseDealerParams.OSBDealerID}
@@ -159,7 +160,9 @@ export default {
         let D = date.getDate() + '日' + ' '
         let h = date.getHours() + ':'
         let m = date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes()
-        this.appointmentTimeStandard = W + M + D + h + m
+		this.appointmentTimeStandard = W + M + D + h + m
+		_osbAuth['appointmentTimeStandard'] = this.appointmentTimeStandard
+		window.localStorage.setItem('osb', JSON.stringify(_osbAuth))
 	},
 	methods: {
 		callDealer () {
@@ -186,7 +189,7 @@ export default {
 					'oldServices': null,
 					'voucherCode': null,
 					'customerAnnotation': null,
-					'serviceAdvisorId': this.serviceConsultant === '其他' ? '' : this.serviceConsultant,
+					'serviceAdvisorId': (this.serviceConsultant === '其他' || this.serviceConsultant === '请选择') ? '' : this.serviceConsultant,
 					'customer': {
 						'name': this.contactName,
 						'phone': this.mobileNumber
@@ -194,25 +197,32 @@ export default {
 					'comments': this.note,
 					'dealer': {
 						'name': this.dealerInformation.name,
-						'phone': this.dealerInformation.OSBPhone,
+						'phone': this.dealerInformation.phone,
 						'address': this.dealerInformation.address
 					}
 				}
+			this.submitBtnStatus = true
 			this.$http.post('https://servicebooking-service-qa.apps.cl-cn-east-preprod01.cf.ford.com/api/v1/bookings', this.submitOrderParams.params, this.submitOrderParams.headerContent).then((response) => {
 				this.previewOrderSummaryStatus = false
 				response = JSON.parse(response.bodyText)
 				let showPostOverLay = true
 				this.$refs.requestconfirmationHook.showRequestConfirmationStatus(showPostOverLay, showAjaxStatus)
+				this.submitBtnStatus = false
 			}, (response) => {
 				this.previewOrderSummaryStatus = false
 				let showPostOverLay = true
 				this.$refs.requestconfirmationHook.showRequestConfirmationStatus(showPostOverLay, !showAjaxStatus)
+				this.submitBtnStatus = false
 			})
+			console.log(this.submitOrderParams.params.serviceAdvisorId)
 		}
 	}
 }
 </script>
 <style lang="stylus" rel="stylesheet/stylus">
+	.previewOrderSummary .content-wrapper
+		position: relative
+		top: 58px
 	.previewOrderSummary .largeBtnWrapper
 		margin-top:20px
 		text-align:center

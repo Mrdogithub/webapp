@@ -9,38 +9,424 @@
     <script type="text/javascript" src='https://webapi.amap.com/maps?v=1.3&key=d103678d66ed712befc5700a2157d3d3&plugin=AMap.CloudDataSearch'></script>
     <script src="https://webapi.amap.com/ui/1.0/main.js?v=1.0.10"></script>
     <script type="text/javascript" src="https://webapi.amap.com/demos/js/liteToolbar.js"></script>
+    <!-- import stylesheet 
+        <link rel="stylesheet" href="//unpkg.com/iview/dist/styles/iview.css">
+    -->
+
+    <!-- import iView 
+        <script src="//unpkg.com/iview/dist/iview.min.js"></script>
+    -->
   </head>
   <body>
     <div id="app"></div>
   </body>
   <script>
 		function importNativeData(message){
-			var _JSON = message
-			if(_JSON) {
-				window.localStorage.clear()
-				window.localStorage.setItem('osb', _JSON)
+			var _test = {
+				"vehicles": [
+						{
+								"modelYear": "2018",
+								"jvFlag": 1,
+								"vin": "LVSHFFFC6HF637525",
+								"nickName": "",
+								"modelName": "Mondeo Hybrid - NH"
+						},
+						{
+								"modelYear": "2018",
+								"jvFlag": 1,
+								"vin": "LVSHFFFC4HF637524",
+								"nickName": "524",
+								"modelName": "Mondeo Hybrid - NH"
+						},
+						{
+								"modelYear": "2018",
+								"jvFlag": 2,
+								"vin": "1FMJK1MT6JEA00013",
+								"nickName": "Info Vin",
+								"modelName": "Expedition"
+						},
+						{
+								"modelYear": "2018",
+								"jvFlag": 2,
+								"vin": "1FA6P8CF0J5100047",
+								"nickName": "liudae",
+								"modelName": "Mustang"
+						},
+						{
+								"modelYear": "2017",
+								"jvFlag": 2,
+								"vin": "1FMCU0F77HUC35601",
+								"nickName": "1FMCU0F77HUC35601",
+								"modelName": "Escape"
+						},
+						{
+								"modelYear": "2017",
+								"jvFlag": 1,
+								"vin": "LVSHMFAC8HH255370",
+								"nickName": "Abcd",
+								"modelName": "Taurus - PC"
+						},
+						{
+								"modelYear": "2017",
+								"jvFlag": 2,
+								"vin": "1FADP5EU9HL100393",
+								"nickName": "CMAX PHEV",
+								"modelName": "C-Max Hybrid/Energi"
+						},
+						{
+								"modelYear": "2016",
+								"jvFlag": 2,
+								"vin": "1FTMF1C85GKD15432",
+								"nickName": "",
+								"modelName": "F-150"
+						},
+						{
+								"modelYear": "2016",
+								"jvFlag": 3,
+								"vin": "LJXCMDFC4GTV02370",
+								"nickName": "",
+								"modelName": "Transit - TI"
+						},
+						{
+								"modelYear": "2016",
+								"jvFlag": 1,
+								"vin": "LVSHFFAL4HS216675",
+								"nickName": "Chin Ford",
+								"modelName": "Escort - FD"
+						},
+						{
+								"modelYear": "2016",
+								"jvFlag": 2,
+								"vin": "1FTEX1CG6GFA76930",
+								"nickName": "Test Ford Vehicle",
+								"modelName": "F-150"
+						},
+						{
+								"modelYear": "2016",
+								"jvFlag": 3,
+								"vin": "LJXCL3DB9GTV01593",
+								"nickName": "测试42",
+								"modelName": "Transit - TI"
+						},
+						{
+								"modelYear": "2016",
+								"jvFlag": 3,
+								"vin": "LJXCMDFC3GTV04465",
+								"nickName": "测试5",
+								"modelName": "Transit - TI"
+						},
+						{
+								"modelYear": "2016",
+								"jvFlag": 3,
+								"vin": "LJXCL3DB1GTV00793",
+								"nickName": "测试6",
+								"modelName": "Transit - TI"
+						},
+						{
+								"modelYear": "2016",
+								"jvFlag": 3,
+								"vin": "LJXCLDDB1GTV05272",
+								"nickName": "测试7",
+								"modelName": "Transit - TI"
+						},
+						{
+								"modelYear": "2015",
+								"jvFlag": 3,
+								"vin": "LJXDJ3CB2GTU24674",
+								"nickName": "",
+								"modelName": "Everest - EB"
+						},
+						{
+								"modelYear": "2015",
+								"jvFlag": 3,
+								"vin": "LJXDJDCB2FTU26672",
+								"nickName": "",
+								"modelName": "Everest - EB"
+						},
+						{
+								"modelYear": "2015",
+								"jvFlag": 1,
+								"vin": "LVSHFFAL1FF244097",
+								"nickName": "",
+								"modelName": "Mondeo - NH"
+						},
+						{
+								"modelYear": "2015",
+								"jvFlag": 3,
+								"vin": "LJXDJ3CB2FTU30828",
+								"nickName": "JMC Vehicle",
+								"modelName": "Everest - EB"
+						},
+						{
+								"modelYear": "2015",
+								"jvFlag": 3,
+								"vin": "LJXDJDCB1GTU27314",
+								"nickName": "JMCVEHICLE",
+								"modelName": "Everest - EB"
+						},
+						{
+								"modelYear": "2015",
+								"jvFlag": 1,
+								"vin": "LVRFFAML8FN611509",
+								"nickName": "Test",
+								"modelName": "Fiesta - EG"
+						},
+						{
+								"modelYear": "2015",
+								"jvFlag": 1,
+								"vin": "LVSHFFAL6FF286393",
+								"nickName": "neil is awesome",
+								"modelName": "Mondeo - NH"
+						},
+						{
+								"modelYear": "2015",
+								"jvFlag": 1,
+								"vin": "LVSHFFAL4FS991037",
+								"nickName": "test VIN",
+								"modelName": "Escort - FD"
+						},
+						{
+								"modelYear": "2015",
+								"jvFlag": 3,
+								"vin": "LJXDJ3CB7GTU57976",
+								"nickName": "测试11",
+								"modelName": "Everest - EB"
+						},
+						{
+								"modelYear": "2015",
+								"jvFlag": 3,
+								"vin": "LJXDJ3CB8FTU24743",
+								"nickName": "测试2",
+								"modelName": "Everest - EB"
+						},
+						{
+								"modelYear": "2015",
+								"jvFlag": 3,
+								"vin": "LJXDJ3CB6GTU06646",
+								"nickName": "测试43",
+								"modelName": "Everest - EB"
+						},
+						{
+								"modelYear": "2015",
+								"jvFlag": 3,
+								"vin": "LJXDJ3CB7GTU20636",
+								"nickName": "测试9",
+								"modelName": "Everest - EB"
+						},
+						{
+								"modelYear": "2014",
+								"jvFlag": 1,
+								"vin": "LVSHFFAC6EF911924",
+								"nickName": "",
+								"modelName": "Mondeo - NH"
+						},
+						{
+								"modelYear": "2014",
+								"jvFlag": 2,
+								"vin": "WF0CXXGAKCEU85743",
+								"nickName": "",
+								"modelName": "Fiesta - CN"
+						},
+						{
+								"modelYear": "2014",
+								"jvFlag": 1,
+								"vin": "LVSHFFAC1EF911801",
+								"nickName": "Ford - Fuel Type G",
+								"modelName": "Mondeo - NH"
+						},
+						{
+								"modelYear": "2014",
+								"jvFlag": 1,
+								"vin": "LVSFKADL1EF798000",
+								"nickName": "Ford VIN",
+								"modelName": "EcoSport - BX"
+						},
+						{
+								"modelYear": "2014",
+								"jvFlag": 1,
+								"vin": "LVSHJCACXEE712409",
+								"nickName": "Odometer",
+								"modelName": "Kuga - CK"
+						},
+						{
+								"modelYear": "2014",
+								"jvFlag": 1,
+								"vin": "LVRHFADL0EN582000",
+								"nickName": "TEST VIN",
+								"modelName": "Fiesta - EG"
+						},
+						{
+								"modelYear": "2013",
+								"jvFlag": 2,
+								"vin": "1FM5K8D87DGB72226",
+								"nickName": "",
+								"modelName": "Explorer"
+						},
+						{
+								"modelYear": "2013",
+								"jvFlag": 1,
+								"vin": "LVSHCFDB4DE180006",
+								"nickName": "",
+								"modelName": "Focus - D2"
+						},
+						{
+								"modelYear": "2013",
+								"jvFlag": 1,
+								"vin": "LVSHFFACXDF571000",
+								"nickName": "CAF1",
+								"modelName": "Mondeo - NH"
+						},
+						{
+								"modelYear": "2013",
+								"jvFlag": 2,
+								"vin": "1FADP5CU7DL536589",
+								"nickName": "CMAX test vin 1",
+								"modelName": "C-Max Hybrid/Energi"
+						},
+						{
+								"modelYear": "2013",
+								"jvFlag": 2,
+								"vin": "WF0FB9KH2DLS09060",
+								"nickName": "FCO vehicle",
+								"modelName": "Focus - B8"
+						},
+						{
+								"modelYear": "2013",
+								"jvFlag": 1,
+								"vin": "LVSHJCAB2DE267069",
+								"nickName": "My Vehicle",
+								"modelName": "Kuga - CK"
+						},
+						{
+								"modelYear": "2013",
+								"jvFlag": 1,
+								"vin": "LVRHFADLXDN522000",
+								"nickName": "Test for Recall",
+								"modelName": "Fiesta - EG"
+						},
+						{
+								"modelYear": "2013",
+								"jvFlag": 1,
+								"vin": "LVRHFADL4DN512000",
+								"nickName": "Venkat -Test Vin 2 MultiRecall",
+								"modelName": "Fiesta - EG"
+						},
+						{
+								"modelYear": "1996",
+								"jvFlag": 2,
+								"vin": "1FTCR10UXTPA78180",
+								"nickName": "",
+								"modelName": "Ranger"
+						},
+						{
+								"modelYear": "1993",
+								"jvFlag": 2,
+								"vin": "1FACP42D3PF141464",
+								"nickName": "",
+								"modelName": "Mustang"
+						}
+				],
+				"userName": "Test FP",
+				"guid": "268a988b-fc48-42b2-b395-aaca45cb5f11",
+				"selectedVehicle": {
+						"modelYear": "2018",
+						"jvFlag": "3",
+						"vin": "LVSHFFFC4HF637524",
+						"nickName": "524",
+						"modelName": "Mondeo Hybrid - NH"
+				},
+				"phoneNumber": "18701712130",
+				"accessToken": "PAA/AHgAbQBsACAAdgBlAHIAcwBpAG8AbgA9ACIAMQAuADAAIgAgAGUAbgBjAG8AZABpAG4AZwA9ACIAdQB0AGYALQAxADYAIgA/AD4APABBAEMAPgA8AFQAbwBrAGUAbgBEAGEAdABhAD4APAAhAFsAQwBEAEEAVABBAFsAewAiAEQAaQBzAHAAbABhAHkATgBhAG0AZQAiADoAIgA3ADgAOQA0ADUANgA2ADEAMgAzADMAIgAsACIAVQBuAGkAcQB1AGUAQQB1AHQAaABJAGQAIgA6ACIAMgA2ADgAYQA5ADgAOABiAC0AZgBjADQAOAAtADQAMgBiADIALQBiADMAOQA1AC0AYQBhAGMAYQA0ADUAYwBiADUAZgAxADEAIgAsACIARQB4AHQAZQByAG4AYQBsAFQAbwBrAGUAbgAiADoAIgBlADIAOQBkAGIAMAA2ADAALQBlAGQAMAA5AC0ANAAwADUAOQAtAGEANQAwAGIALQAxAGMAMABmAGYAZQAwADcAMAA2ADMANQAiACwAIgBTAGUAcwBzAGkAbwBuAEkAZAAiADoAIgA0ADIAMgBjAGIAZgA3AGMALQA4ADEAYgBhAC0ANABjAGYANQAtAGIAZQA1AGUALQA0AGIAYQAxADAAOQA2ADcANQBlAGYAMgAiACwAIgBEAGEAdABlAEkAcwBzAHUAZQBkACIAOgAtADgANQA4ADYAOAA3ADYAOAAzADQAMgAwADcANQA4ADYAMwAyADIALAAiAEkAcwBzAHUAZQByACIAOgAiAGwAaQBnAGgAdABoAG8AdQBzAGUAIgAsACIAVgBhAGwAaQBkAGEAdABlAGQAIgA6ACIAMgAwADEANwAtADEAMgAtADIAMgBUADAANgA6ADEANwA6ADQANAAuADcAMQA4ADkANAA4ADYAKwAwADAAOgAwADAAIgAsACIAVgBlAHIAcwBpAG8AbgAiADoAIgAxAC4AMAAuADAAIgAsACIAVABUAEwAIgA6ADEANAA0ADAAMAAuADAALAAiAFUAcwBlAHIASQBkACIAOgAxADAANQAsACIAUwBkAG4AQQBwAHAASQBkACIAOgA4ADkALAAiAEQAYQB0AGEAQwBlAG4AdABlAHIAIgA6ACIAYwBuAGUAIgB9AF0AXQA+ADwALwBUAG8AawBlAG4ARABhAHQAYQA+ADwAUwBpAGcAbgBhAHQAdQByAGUAPgA8ACEAWwBDAEQAQQBUAEEAWwBMACsALwAzAHkAcQBCADcAaQBxAHIAeQBuAEUARgBoAFcAawBPAEIANABHAHIARAAwAGoAVAB2AE8AZABqAFcAcwBQAGUAMAB1ADIAegBxAFkAZABjAD0AXQBdAD4APAAvAFMAaQBnAG4AYQB0AHUAcgBlAD4APAAvAEEAQwA+AA==",
+				"chooseDealerParams": {
+						"name": "上海福成汽车销售服务有限公司",
+						"OSBPhone": "15940885590",
+						"address": "上海浦东莲溪路1225号",
+						"OSBDealerID": "20940"
+				},
+				"showDealerInfo": {
+						"OSBDealerID": "20940",
+						"name": "上海永达通宝汽车销售服务有限公司",
+						"address": "上海市宝山区长江西路977号",
+						"OSBPhone": "15940885590"
+				},
+				"selectServiceTypeParams": {
+						"customer_mileage": "123123",
+						"customer_name": "Test FP",
+						"customer_phoneNumber": "18701712130",
+						"customer_consultant": "杜鹏飞",
+						"customer_note": "123123",
+						"customer_serviceType": "保养"
+				},
+				"selectDateAndTime": {
+						"apptTime": "2017-12-26 T8:00"
+				},
+				"appointmentTimeStandard": "周二,12月26日 8:00"
 			}
+			window.localStorage.clear()
+			var _JSON = message ||JSON.stringify(_test)
+			window.localStorage.setItem('osb', _JSON)
 		}
+
 		function saveCalendarSuccess(message) {
 			if (typeof(message) === 'boolean' || typeof(message) === 'string') {
 				message = message
 			} else {
 				message = 'noResponse'
-				let _osbAuth = JSON.parse(window.localStorage.getItem('osb'))
-				_osbAuth['saveToCalendarStatus'] = message
-				window.localStorage.setItem('osb', JSON.stringify(_osbAuth))
 			}
+			let _osbAuth = JSON.parse(window.localStorage.getItem('osb'))
+			_osbAuth['saveToCalendarStatus'] = message
+			window.localStorage.setItem('osb', JSON.stringify(_osbAuth))
 		}
+		importNativeData()
 		var u = navigator.userAgent
 		var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1 // android终端
 		var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/) // ios终端
 		if (isAndroid) {
 			window.AppModel.postMessage(JSON.stringify({'message': 'importNativeData'}));
 		} else if (isiOS) {
-			window.webkit.messageHandlers.AppModel.postMessage(JSON.stringify({'message': 'importNativeData'}));
+			window.webkit.messageHandlers.AppModel.postMessage({'message': 'importNativeData'});
 		}
 
-		importNativeData()
-		saveCalendarSuccess(false)
   </script>
+  <style>
+	input,textarea{ 
+		-webkit-appearance: none;
+		-webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+		outline: none;
+		border: none;
+	}
+	.ivu-input:hover {
+		border-color:transparent;
+	}
+	.selectServiceType .ivu-input:hover{
+		border-top-color: #dddee1;
+		border-bottom-color: #dddee1;
+	}
+	.selectServiceType .inputevenHook .ivu-input,
+	.selectServiceType .inputevenHook .ivu-input-group-append{
+		border-top-color:transparent;
+	}
+	.ivu-input:focus {
+		border-color:transparent;
+		outline: 0;
+		-webkit-box-shadow: 0 0 0 2px rgba(45,140,240,0);
+		box-shadow: 0 0 0 2px rgba(45,140,240,0);
+	}
+	.ivu-select-selection:hover {
+		border-color: #dddee1;
+	}
+	.chooseDealerOption .ivu-input-group {
+		-webkit-box-shadow: 1px 1px 3px #dbdbdb;
+		box-shadow: 1px 1px 3px #dbdbdb;
+		border-top: 1px solid #dddee1;
+		border-bottom: 1px solid #dddee1;
+	}
+	.chooseDealerOption .ivu-input{
+		border:none
+	}
+	.chooseDealerOption .ivu-input-group-prepend{
+		border-top: none;
+		border-bottom: none;
+	}
+  </style>
 </html>

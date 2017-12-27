@@ -34,7 +34,7 @@
             &>a
                 display:block
                 font-size:14px
-                color:rgb(77,85,93)
+                color:rgb(149,149,149)
                 &.active
                     color:rgb(56,147,170)
                     border-bottom:2px solid rgb(56,147,170)

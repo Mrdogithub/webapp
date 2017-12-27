@@ -27,7 +27,7 @@
 		  </div>
 	  </div>
 	  <div class="largeBtnWrapper">
-			<Button type = "primary" size = "large" class = "largeBtn"   @click.stop = "goToPreviewOrderSummary()" :class = "{active: chooseDate !== '' && chooseTime !== ''}">订单详情预览</Button>
+		<Button type = "primary" size = "large" class = "largeBtn"   @click.stop = "goToPreviewOrderSummary()" :class = "{active: this.chooseDate !== '' && this.chooseTime !== ''}"  v-bind:disabled='buttonStatus'>订单详情预览</Button>
 	  </div>
 	  <div class = "date-intro">
 	      <p class = "date-title">*可选日期仅限明天至未来一周，可选时段根据经销商营业时间而定。</p>
@@ -73,6 +73,15 @@
 			var tomorrowD = (tomorrow.getDate() < 10 ? '0' + tomorrow.getDate() : tomorrow.getDate()) + ' '
 			this.tomorrowTime = tomorrowY + tomorrowM + tomorrowD
 			this.chooseDate = this.tomorrowTime
+		},
+		computed: {
+            buttonStatus () {
+                if (this.chooseDate !== '' && this.chooseTime !== '') {
+					return false
+				} else {
+					return true
+				}
+			}
 		},
 		methods: {
 			handleChange (date) {
@@ -122,7 +131,7 @@
 		position:unset !important
 	.selectDateAndTime .ivu-picker-panel-body
 		width:100%
-    .selectDateAndTime .ivu-date-picker-cells
+	.selectDateAndTime .ivu-date-picker-cells
 		width:97%
 		margin:0 auto
 	.selectDateAndTime .ivu-date-picker-cells-header
@@ -147,7 +156,7 @@
 		border-radius: 50% !important
 	.selectDateAndTime .ivu-date-picker-cells-cell
 		margin:0px 2%
-    .selectDateAndTime .select-time
+	.selectDateAndTime .select-time
 		height:50px
 		padding: 0 10px
 		font-size:14px
@@ -162,21 +171,17 @@
 		line-height:50px
 	.selectDateAndTime span.ivu-date-picker-cells-cell-disabled, span.ivu-date-picker-cells-cell-disabled:hover
 		background:none
+	.selectDateAndTime span.ivu-date-picker-cells-cell-disabled em
+		color: #bbbec4
 	.selectDateAndTime .ivu-date-picker-cells-cell-prev-month em, .ivu-date-picker-cells-cell-next-month em
 		color:black
 	.selectDateAndTime .largeBtnWrapper
 		height: 158px
-	.selectDateAndTime .ivu-btn-large,.ivu-btn-large:hover
-		margin-top:80px
-		width: 90.1333%
-		height: 55px
-		background:rgb(193,193,193)
-		color:rgb(255,255,255)
-		border:none
 	.selectDateAndTime .ivu-date-picker-cells-cell-today em:after
 		display:none
 	.selectDateAndTime .ivu-btn-large.active,.ivu-btn-large.active:hover
 		background:rgb(45,150,205)
+		color:#fff
 	.selectDateAndTime .date-intro .date-title
 		height: 80px
 		line-height: 20px
@@ -185,4 +190,11 @@
 	.selectDateAndTime span.ivu-date-picker-cells-cell
 		width:10%
 		height:10%
+	.selectDateAndTime .ivu-btn-large,.ivu-btn-large:hover
+		margin-top:80px
+		width: 90.1333%
+		height: 55px
+		background:#f7f7f7
+		color:#bbbec4
+		border:none
 </style>

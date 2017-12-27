@@ -11,15 +11,15 @@
 				</p>
 				<p class="text-content">
 					{{requestConfirmationData.name}}{{requestConfirmationData.address}}
-					<a href="tel:requestConfirmationData.phone">致电经销商:{{requestConfirmationData.phone}}</a>
+					<span>致电经销商:{{requestConfirmationData.phone}}</span>
 				</p>
 				<p class="text-content"> 
-					预约时间:{{appointmentTime}}
+					预约时间:{{appointmentTimeStandard}}
 				</p>
 			</div>	
 			<div class="largeBtnWrapper">
 				<div>
-					<Button type="primary" class="largeBtn" @click="saveToCalendar">设置提醒</Button>
+					<Button type="primary" class="largeBtn" @click="saveToCalendar" v-bind:disabled="saveToCalendarFlag">设置提醒</Button>
 				</div>
 				<div class="btn-wrapper modifyOrder">
 						<Button type="primary" class="largeBtn" @click = "goToMyAppointment">好</Button>
@@ -55,14 +55,15 @@ import alert from '../components/alert'
 export default {
 	data () {
 		return {
-			requestConfirmationData: {},
+			requestConfirmationData: {name: '', address: '', phone: ''},
 			requestConfirmationStatus: false,
 			appointmentTime: '',
 			title: '',
 			message: '',
 			showCancel: false,
 			showTryAgain: false,
-			showSuccess: false
+			showSuccess: false,
+			saveToCalendarFlag: false
 		}
     },
     components: {
@@ -71,9 +72,14 @@ export default {
 	},
 	created () {
 		let _osbAuth = JSON.parse(window.localStorage.getItem('osb'))
+		this.appointmentTimeStandard = _osbAuth.appointmentTimeStandard
 		this.appointmentTime = _osbAuth.selectDateAndTime.apptTime
+		this.requestConfirmationData = {name: _osbAuth.chooseDealerParams.name, address: _osbAuth.chooseDealerParams.address, phone: _osbAuth.chooseDealerParams.OSBPhone}
 	},
 	methods: {
+		callDealer () {
+			return 'tel:' + this.requestConfirmationData.phone
+		},
 		showRequestConfirmationStatus (status, resultStatus) {
 			this.requestConfirmationStatus = status
 			this.submitSuccess = resultStatus
@@ -91,10 +97,8 @@ export default {
 			}
 		},
 		goToMyAppointment () {
-			this.$router.push({name: 'myAppointment'})
-
 			let _osbAuth = JSON.parse(window.localStorage.getItem('osb'))
-			let modifyOrderId = _osbAuth.vehicles.modifyOrderId
+			let modifyOrderId = _osbAuth.modifyOrderId
 			console.log('orderId:' + modifyOrderId)
 			var isAndroid = ''
 			var isiOS = ''
@@ -109,39 +113,18 @@ export default {
 				}
 			} else if (isiOS) {
 				if (modifyOrderId) {
-					window.AppModel.postMessage(JSON.stringify({'message': 'modifyOrderSuccess'}))
+					window.webkit.messageHandlers.AppModel.postMessage({'message': 'modifyOrderSuccess'})
 				} else {
-					window.AppModel.postMessage(JSON.stringify({'message': 'createOrderSuccess'}))
+					window.webkit.messageHandlers.AppModel.postMessage({'message': 'createOrderSuccess'})
 				}
 			}
+			this.$router.push({name: 'myAppointment'})
 		},
 		reSubmit () {
 			console.log('resubmit')
 			this.$emit('resubmit')
 		},
 		saveToCalendar () {
-			let _osbAuth = JSON.parse(window.localStorage.getItem('osb'))
-			let saveToCalendarStatus = _osbAuth['saveToCalendarStatus']
-			console.log(saveToCalendarStatus)
-            setTimeout(() => {
-				if (saveToCalendarStatus === 'noResponse') {
-					this.$refs.alertHook.orderConfirmStatus = false
-					console.log('no-response')
-				} else if (saveToCalendarStatus === true || saveToCalendarStatus === 'true') {
-					this.$refs.alertHook.orderConfirmStatus = true
-					this.showSuccess = true
-					this.title = '您已设置提醒'
-					this.message = '您预约的服务将被自动添加至您的日历中'
-					_osbAuth['saveToCalendarStatus'] = 'noResponse'
-				} else if (saveToCalendarStatus === false || saveToCalendarStatus === 'false') {
-					this.$refs.alertHook.orderConfirmStatus = true
-					this.showCancel = true
-					this.showTryAgain = true
-					this.title = '设置提醒失败'
-					this.message = '无法将您的服务提醒保存至您的日历'
-					_osbAuth['saveToCalendarStatus'] = 'noResponse'
-				}
-			}, 1000)
 			let startTimeStamp = new Date(this.appointmentTime.split('-').join('/').replace('T', ' ')).getTime() // 开始时间戳
 			let startTime = new Date(startTimeStamp) // Sat Dec 16 2017 11:00:00 GMT+0800 (China Standard Time)
 			let startY = startTime.getFullYear() + '-'
@@ -161,7 +144,7 @@ export default {
 			let ends = (endTime.getSeconds() < 10 ? '0' + endTime.getSeconds() : endTime.getSeconds())
 			this.end = endY + endM + endD + endh + endm + ends
 			console.log(this.end)
-
+			this.saveToCalendarFlag = true
 			var isAndroid = ''
 			var isiOS = ''
 			var u = navigator.userAgent
@@ -188,6 +171,29 @@ export default {
 					}
 				})
 			}
+			let _osbAuth = JSON.parse(window.localStorage.getItem('osb'))
+			let saveToCalendarStatus = _osbAuth['saveToCalendarStatus']
+			console.log(saveToCalendarStatus)
+            setTimeout(() => {
+				if (saveToCalendarStatus === 'noResponse') {
+					this.$refs.alertHook.orderConfirmStatus = false
+					console.log('no-response')
+				} else if (saveToCalendarStatus === true || saveToCalendarStatus === 'true') {
+					this.$refs.alertHook.orderConfirmStatus = true
+					this.showSuccess = true
+					this.title = '您已设置提醒'
+					this.message = '您预约的服务将被自动添加至您的日历中'
+					_osbAuth['saveToCalendarStatus'] = 'noResponse'
+				} else if (saveToCalendarStatus === false || saveToCalendarStatus === 'false') {
+					this.$refs.alertHook.orderConfirmStatus = true
+					this.showCancel = true
+					this.showTryAgain = true
+					this.title = '设置提醒失败'
+					this.message = '无法将您的服务提醒保存至您的日历'
+					_osbAuth['saveToCalendarStatus'] = 'noResponse'
+				}
+				this.saveToCalendarFlag = false
+			}, 500)
 		}
 	}
 }
@@ -225,6 +231,7 @@ export default {
 		margin-top:17px
 	.requestConfirmation .ivu-btn-primary
 		font-size:17px
+		color:#fff
 		background:rgb(45,150,205)
 		border-color:rgb(45,150,205)
 	.requestConfirmation .modifyOrder .ivu-btn-primary

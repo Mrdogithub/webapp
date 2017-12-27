@@ -6,12 +6,12 @@
 		<transition name="fade">
 			<Row v-show = "showChooseCity">
 					<Col span="12">
-						<Select v-model="provinceValue"  @on-change = "selectProvince(listView)">
+						<Select class="provinceHighLight" v-model="provinceValue" placeholder='省市' @on-change = "selectProvince(listView)">
 							<Option v-for="item in provinceList" :value="item.p" :key="item.p"  >{{ item.p }}</Option>
 						</Select>
 					</Col>
 					<Col span="12">
-						<Select v-model="cityValue" @on-change = "selectCity(listView)">
+						<Select class="cityHighLight" v-model="cityValue" placeholder='地区' @on-change = "selectCity(listView)">
 							<Option v-for="item in cityList" :value="item" :key="item">{{ item }}</Option>
 						</Select>
 					</Col> 
@@ -29,12 +29,22 @@
 		<div class="mapView" v-show = "mapView">
 			<transition name="fade">
 				<div class="noDealerMessage" v-show = "noDealer">
-					<p>Sorry, Pickup & Delivery Service is currently only available in Beijing, Shanghai, Guangzhou, Chengdu, Suzhou and Nanjing. We are working on expanding this service to your city. Thank you for your patience!</p>
+					<p>Sorry, your search did not return any results. Please search a different city or province by using the dropdown.</p>
 				</div>
 			</transition>
 			<transition name="fade">
 				<div class="noDealerMessage" v-show = "noDealerByQueryTextInMap">
-					<p>No results. Please search a different city or province using the dropdown.</p>
+					<p>Sorry, your search did not return any results. Please try searching for another dealer or searching by using the dropdown.</p>
+				</div>
+			</transition>
+			<transition name="fade">
+				<div class="noDealerMessage" v-show = "noDealerByJvFlagInMap">
+					<p>Sorry, Online service booking is currently not available for your vehicle. Please call your preferred dealer to book an service appointment.</p>
+				</div>
+			</transition>
+			<transition name="fade">
+				<div class="noDealerMessage" v-show = "noDealerByLocationInMap">
+					<p>Sorry, Online Service Booking is currently not available in your current location. Please search available location by using dropdown.</p>
 				</div>
 			</transition>
 			<div id="container" style="min-width:320px;width:100%; height:100%;min-height:450px;position:relative"></div>	
@@ -46,13 +56,25 @@
 				<transition name="fade">
 					<div class="noDealerByQueryCity" v-show = "noDealerByQueryCity">
 						<img src="../assets/warning@3x.png" width="29" height="25"/>
-						<p>Sorry, Pickup & Delivery Service is currently only available in Beijing, Shanghai, Guangzhou, Chengdu, Suzhou and Nanjing. We are working on expanding this service to your city. Thank you for your patience!</p>
+						<p>Sorry, your search did not return any results. Please search a different city or province by using the dropdown.</p>
 					</div>
 				</transition>
 				<transition name="fade">
 					<div class="noDealerByQueryText" v-show = "noDealerByQueryText">
 						<img src="../assets/warning@3x.png" width="29" height="25"/>
-						<p>No results. Please search a different city or province using the dropdown.</p>
+						<p>Sorry, your search did not return any results. Please try searching for another dealer or searching by using the dropdown.</p>
+					</div>
+				</transition>
+				<transition name="fade">
+					<div class="noDealerByQueryText" v-show = "noDealerByJvFlagInList">
+						<img src="../assets/warning@3x.png" width="29" height="25"/>
+						<p>Sorry, Online service booking is currently not available for your vehicle. Please call your preferred dealer to book an service appointment.</p>
+					</div>
+				</transition>
+				<transition name="fade">
+					<div class="noDealerByQueryText" v-show = "noDealerByLocationInList">
+						<img src="../assets/warning@3x.png" width="29" height="25"/>
+						<p>Sorry, Online Service Booking is currently not available in your current location. Please search available location by using dropdown.</p>
 					</div>
 				</transition>
 				<li class="listViewItem" v-for = "item in orderDealer" :value="item._name" :key="item._distance" @click.stop = "selectDealerForListView(item)">
@@ -72,7 +94,7 @@
 		</div>
 	</transition>
 	<transition name="fade">
-		<dealer-info ref = "showDealer" v-bind="{ 'dealerObj': activeDealer}" @dealer-switch-status = "switchDealerInfo"></dealer-info>
+		<dealer-info ref = "showDealer" v-bind="{ 'dealerObj': activeDealer}"></dealer-info>
 	</transition>
 </div>
 </template>
@@ -99,6 +121,10 @@ export default {
 			noDealerByQueryCity: false,
 			noDealerByQueryText: false,
 			noDealerByQueryTextInMap: false,
+			noDealerByJvFlagInMap: false,
+			noDealerByLocationInMap: false,
+			noDealerByJvFlagInList: false,
+			noDealerByLocationInList: false,
 			provinceList: [],
 			cityList: [],
 			value13: '',
@@ -129,11 +155,23 @@ export default {
 				params: {
 					'tableid': '58afdc467bbf195ae88d74ab',
 					'city': '',
-					'keywords': 'CAF',
+					'keywords': '',
 					'filter': '',
 					'key': '6edfef5707fff59eaa5ba33f7f02b939'
 				}
-			}
+			},
+			dealerAroundParams: {
+				params: {
+					'tableid': '58afdc467bbf195ae88d74ab',
+					'city': '',
+					'keywords': '',
+					'filter': '',
+					'radius': '',
+					'center': '',
+					'key': '6edfef5707fff59eaa5ba33f7f02b939'
+				}
+			},
+			jvFlag: ''
 		}
 	},
 	computed: {
@@ -173,13 +211,24 @@ export default {
 				this.showDealerInfo()
 			}
 		},
-		switchDealerInfo () {
-
-		},
-		getDealer (city, filter) {
+		getDealer (city, filter, invokeByGaoDe) {
+			map.clearMap()
+			let _osbAuth = JSON.parse(window.localStorage.getItem('osb'))
+			let jvNumber = _osbAuth.selectedVehicle.jvFlag
+			let Flag = ['', 'CAF', 'FCO', 'JMC']
+			this.jvFlag = Flag[jvNumber]
+			if (this.jvFlag !== 'CAF' && !this.listView) {
+				this.noDealerByJvFlagInMap = true
+				return
+			}
+			if (this.jvFlag !== 'CAF' && this.listView) {
+				this.noDealerByJvFlagInList = true
+				return
+			}
 			this.dealerParams.params.filter = filter
 			this.dealerParams.params.city = city
 			this.orderDealer.length = 0
+			this.dealerParams.params.keywords = this.jvFlag
 			if (this.dealerParams.params.city) {
 				this.$http.get('https://yuntuapi.amap.com/datasearch/local', this.dealerParams).then((response) => {
 					response = JSON.parse(response.bodyText)
@@ -199,8 +248,56 @@ export default {
 						if (city !== '全国' && !this.listView) {
 							this.noDealer = true
 						}
+
 						if (city === '全国' && !this.listView) {
 							this.noDealerByQueryTextInMap = true
+						}
+
+						if (invokeByGaoDe && !this.listView) {
+							this.noDealerByLocationInMap = true
+						}
+						if (invokeByGaoDe && this.listView) {
+							this.noDealerByLocationInList = true
+						}
+					//	this.$refs.barComponentHook.errorCloseFn('没有查询结果。请使用下拉菜单搜索不同的城市或省份。', true)
+					}
+				}, (response) => {
+					// 响应错误回调
+				})
+			}
+		},
+		getAroundDealer (city, filter, center) {
+			let _osbAuth = JSON.parse(window.localStorage.getItem('osb'))
+			let jvNumber = _osbAuth.selectedVehicle.jvFlag
+			let Flag = ['', 'CAF', 'FCO', 'JMC']
+			this.jvFlag = Flag[jvNumber]
+			if (this.jvFlag !== 'CAF' && !this.listView) {
+				this.noDealerByJvFlagInMap = true
+				return
+			}
+			if (this.jvFlag !== 'CAF' && this.listView) {
+				this.noDealerByJvFlagInList = true
+				return
+			}
+			this.dealerAroundParams.params.filter = filter
+			this.dealerAroundParams.params.city = city
+			this.dealerAroundParams.params.keywords = this.jvFlag
+			this.dealerAroundParams.params.radius = '50000'
+			this.dealerAroundParams.params.center = center
+			this.orderDealer.length = 0
+			if (this.dealerAroundParams.params.city) {
+				this.$http.get('http://yuntuapi.amap.com/datasearch/around', this.dealerAroundParams).then((response) => {
+					response = JSON.parse(response.bodyText)
+					if (response.datas.length) {
+						map.clearMap()
+						this.init(this.dealerAroundParams.params.city, response.datas)
+					} else {
+						map.clearMap()
+						if (!this.listView) {
+							this.noDealerByLocationInMap = true
+						}
+						if (this.listView) {
+							this.noDealerByLocationInList = true
 						}
 					//	this.$refs.barComponentHook.errorCloseFn('没有查询结果。请使用下拉菜单搜索不同的城市或省份。', true)
 					}
@@ -214,8 +311,10 @@ export default {
 			this.noDealerByQueryText = false
 			this.noDealerByQueryCity = false
 			this.noDealerByQueryTextInMap = false
-			// let _filter = 'OSBFlag:True'
-			// this.getDealer(this.provinceValue, _filter)
+			this.noDealerByJvFlagInMap = false
+			this.noDealerByJvFlagInList = false
+			this.noDealerByLocationInMap = false
+			this.noDealerByLocationInList = false
 			for (let i = 0; i < this.allCity.length; i++) {
 				if (this.allCity[i].Province === this.provinceValue) {
 					let _cityArray = this.allCity[i].City.split('%')
@@ -228,16 +327,22 @@ export default {
 			this.noDealerByQueryText = false
 			this.noDealerByQueryCity = false
 			this.noDealerByQueryTextInMap = false
+			this.noDealerByJvFlagInMap = false
+			this.noDealerByJvFlagInList = false
+			this.noDealerByLocationInMap = false
+			this.noDealerByLocationInList = false
 			let _filter = 'OSBFlag:True'
 			this.getDealer(this.cityValue, _filter)
 		},
 		selectDealer (e) {
 			let _paramsForActiveDealer = e.target.G
-			this.activeDealer = {'OSBDealerID': _paramsForActiveDealer.OSBDealerID || '20940', 'name': _paramsForActiveDealer.name, 'address': _paramsForActiveDealer.address, 'OSBPhone': _paramsForActiveDealer.OSBPhone || '15940885590'}
-			this.$refs.showDealer.showDealerDetail(this.activeDealer, true)
+			this.activeDealer.length = 0
+			this.activeDealer.push({'OSBDealerID': _paramsForActiveDealer.OSBDealerID || '20940', 'name': _paramsForActiveDealer.name, 'address': _paramsForActiveDealer.address, 'OSBPhone': _paramsForActiveDealer.OSBPhone || '15940885590'})
+			this.$refs.showDealer.showDealerDetail(this.activeDealer[0], true)
 		},
 		selectDealerForListView (selectedDealer) {
-			this.activeDealer = {'OSBDealerID': selectedDealer.OSBDealerID || '20940', 'name': selectedDealer._name, 'address': selectedDealer._address, 'OSBPhone': selectedDealer.OSBPhone || '15940885590'}
+			this.activeDealer.length = 0
+			this.activeDealer.push({'OSBDealerID': selectedDealer.OSBDealerID || '20940', 'name': selectedDealer._name, 'address': selectedDealer._address, 'OSBPhone': selectedDealer.OSBPhone || '15940885590'})
 			this.switchIcon(true)
 		},
 		queryDealerByText (listView) {
@@ -245,11 +350,16 @@ export default {
 			this.noDealerByQueryText = false
 			this.noDealerByQueryCity = false
 			this.noDealerByQueryTextInMap = false
+			this.noDealerByJvFlagInMap = false
+			this.noDealerByJvFlagInList = false
+			this.noDealerByLocationInMap = false
+			this.noDealerByLocationInList = false
 			let _filter = '_name:' + this.queryDealerByTextValue + '+OSBFlag:True'
 			this.cityValue = '全国'
 			this.getDealer(this.cityValue, _filter)
 		},
 		hideDealerInfo () {
+			this.activeDealer.length = 0
 			this.$refs.showDealer.showDealerDetail(this.activeDealer, false)
 		},
 		showDealerInfo () {
@@ -257,7 +367,7 @@ export default {
 			_osbAuth['showDealerInfo'] = this.activeDealer
 			window.localStorage.setItem('osb', JSON.stringify(_osbAuth))
 			if (this.activeDealer.length) {
-				this.$refs.showDealer.showDealerDetail(this.activeDealer, true)
+				this.$refs.showDealer.showDealerDetail(this.activeDealer[0], true)
 			}
 		},
 		init (city, result) {
@@ -275,7 +385,8 @@ export default {
 					position: [_gps[0], _gps[1]],
 					name: result[i]._name,
 					address: result[i]._address,
-					tel: result[i].ServicePhoneNumber
+					OSBPhone: result[i].OSBPhone,
+					OSBDealerID: result[i].OSBDealerID
 				})
 				result[i]['_distance'] = lnglat.distance([_gps[0], _gps[1]])
 				AMap.event.addListener(marker, 'click', this.selectDealer)
@@ -296,7 +407,7 @@ export default {
 						this.provinceList.push({'p': response.datas[i].Province})
 					}
 				} else {
-					this.$refs.barComponentHook.errorCloseFn('没有查询结果。请使用下拉菜单搜索不同的城市或省份。', true)
+					this.$refs.barComponentHook.errorCloseFn('没有查询结果', true)
 				}
 			}, (response) => {
 				// 响应错误回调
@@ -327,18 +438,14 @@ export default {
 			geolocation.getCurrentPosition()
 			// _that.dealerAroundParams.params.center = geolocation.getCurrentPosition()
 			AMap.event.addListener(geolocation, 'complete', function (e) {
-				// alert(geolocation)
-				console.log(1, e)
 				_that.$refs.barComponentHook.errorCloseFn(e.message, false)
-				_that.dealerParams.params.city = e.addressComponent.province
-				_that.provinceValue = e.addressComponent.province.replace('市', '')
-				_that.cityValue = _that.provinceValue
-				_that.getDealer() // 传入两个参数  一个城市，一个OSBFlag
+				let _filter = 'OSBFlag:True'
+				let invokeByGaoDe = true
+				debugger
+				_that.getAroundDealer(e.addressComponent.city, _filter, invokeByGaoDe)
 				_that.$refs.barComponentHook.errorCloseFn(e.message, false)
 			}) // 返回定位信息
 			AMap.event.addListener(geolocation, 'error', function (e) {
-				// alert(geolocation)
-				console.log(1, e)
 				_that.$refs.barComponentHook.errorCloseFn(e.message, true)
 			}) // 返回定位出错信息
 		})
@@ -497,4 +604,21 @@ export default {
 	.chooseDealerOption .noDealerByQueryCity
 		position: absolute
 		top: 100px
+	.amap-geolocation-con .amap-geo, .amap-touch-toolbar .amap-geo
+		background: url('data:image/png;base64,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') 50% 50% no-repeat transparent
+		width: 55px
+		height: 55px
+		background-size: contain
+		border: 1px solid transparent
+		border-radius: 3px
+		right: 4px
+		box-shadow: 1px 1px 3px transparent
+	.chooseDealerOption	.provinceHighLight .ivu-select-placeholder
+		color: rgb(45,152,205)
+	.chooseDealerOption	.provinceHighLight .ivu-select-selected-value
+		color: rgb(45,152,205)
+	.chooseDealerOption .cityHighLight .ivu-select-placeholder
+		color: #959595
+	.chooseDealerOption	.cityHighLight .ivu-select-selected-value
+		color: rgb(45,152,205)
 </style>

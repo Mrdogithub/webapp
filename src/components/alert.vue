@@ -67,10 +67,10 @@ export default {
             bottom:0
             margin:auto
             width:91.2%
-            min-height:208px
-            max-height: 260px
+            min-height:200px
             background:rgb(249,252,255)
             border-radius:18px
+            padding-bottom:17px
             &>h2
                 font-size:17px
                 padding:20px

@@ -8,7 +8,7 @@
 				<span slot="prepend" style="display:none"></span>
         		<span slot="append" @click = "clearNameInput()"><Icon type="ios-close"></Icon></span>
 			</Input>
-			<Input v-model="phoneNumber" placeholder=" " maxlength="11" type="text" class="input-item inputevenHook" v-bind:class="{ 'checkErrorPhoneNumber':checkPhoneNumber}">
+			<Input v-model="phoneNumber" placeholder=" " maxlength="11" type="number" class="input-item inputevenHook" v-bind:class="{ 'checkErrorPhoneNumber':checkPhoneNumber}">
 				<span slot="prepend" style="display:none"></span>
         		<span slot="append" @click = "clearPhoneNumberInput()"><Icon type="ios-close"></Icon></span>	
 			</Input>
@@ -73,7 +73,7 @@ export default {
 		return {
 			listData: [],
 			Hidden: false,
-			serviceType: '',
+			serviceType: '保养',
 			name: '',
 			phoneNumber: '',
 			mileage: '',
@@ -81,7 +81,6 @@ export default {
 				checkName: false,
 				checkPhoneNumber: false,
 				checkConsultant: false,
-				checkServiceType: false,
 				checkMileage: false
 			},
 			consultant: '请选择',
@@ -131,13 +130,6 @@ export default {
 				return false
 			}
 		},
-		checkServiceType () {
-			if (!this.ServiceType) {
-				return true
-			} else {
-				return false
-			}
-		},
 		onSubmitFlag () {
 			this.showError()
 			if (!this.name) {
@@ -146,13 +138,8 @@ export default {
 				return false
 			} else if (!this.mileage) {
 				return false
-			} else if (!this.serviceType) {
-				return false
-			} else if (this.consultant === '请选择') {
-				return false
 			}
-
-			if (this.name && this.phoneNumber && this.mileage && this.consultant !== '请选择' && this.serviceType) {
+			if (this.name && this.phoneNumber && this.mileage) {
 				return true
 			}
 		}
@@ -221,16 +208,16 @@ export default {
 	.selectServiceType .largeBtn
 		width:90.1333%
 		height 55px
-	.checkErrorName .ivu-input,
-	.checkErrorMileage .ivu-input,
-	.checkErrorServiceType .ivu-input,
-	.checkErrorPhoneNumber .ivu-input,
-	.selectServiceType .checkErrorName .ivu-input-group-append,
-	.selectServiceType .checkErrorMileage .ivu-input-group-append,
-	.selectServiceType .checkErrorPhoneNumber .ivu-input-group-append
-		background:rgba( 208,2,27,0.05)
+	.checkErrorMileage,.checkErrorPhoneNumber,.checkErrorName
 		border-top:1px solid rgb(208,2,27)
 		border-bottom:1px solid rgb(208,2,27)
+	.checkErrorName .ivu-input,
+	.checkErrorMileage .ivu-input,
+	.selectServiceType .checkErrorPhoneNumber .ivu-input,
+	.selectServiceType .checkErrorName .ivu-input-group-append,
+	.selectServiceType .checkErrorPhoneNumber .ivu-input-group-append
+	.selectServiceType .checkErrorMileage .ivu-input-group-append
+		background:rgba( 208,2,27,0.05)
 	.selectServiceType .ivu-input
 		height:55px
 		width: 100%

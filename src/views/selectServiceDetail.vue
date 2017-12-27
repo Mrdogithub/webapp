@@ -4,42 +4,30 @@
         <div class="content-wrapper">
             <ul class="detail-list-wrapper">
                 <li class="detail-list-item" v-on:click="showServicePackage()">5000 km service package</li>
-                <li class="detail-list-item">5000 km service package</li>
-                <li class="detail-list-item">5000 km service package</li>
-                <li class="detail-list-item">5000 km service package</li>
-                <li class="detail-list-item">5000 km service package</li>
-                <li class="detail-list-item">5000 km service package</li>
-                <li class="detail-list-item">5000 km service package</li>
-                                <li class="detail-list-item">5000 km service package</li>
-                <li class="detail-list-item">5000 km service package</li>
-                <li class="detail-list-item">5000 km service package</li>
-                <li class="detail-list-item">5000 km service package</li>
-                <li class="detail-list-item">5000 km service package</li>
-                <li class="detail-list-item">5000 km service package</li>
-                                <li class="detail-list-item">5000 km service package</li>
-                <li class="detail-list-item">5000 km service package</li>
-                <li class="detail-list-item">5000 km service package</li>
-                <li class="detail-list-item">5000 km service package</li>
-                <li class="detail-list-item">5000 km service package</li>
-                <li class="detail-list-item">5000 km service package</li>
-                                <li class="detail-list-item">5000 km service package</li>
-                <li class="detail-list-item">5000 km service package</li>
-                <li class="detail-list-item">5000 km service package</li>
-                <li class="detail-list-item">5000 km service package</li>
-                <li class="detail-list-item">5000 km service package</li>
-                <li class="detail-list-item">5000 km service package</li>
-                                <li class="detail-list-item">5000 km service package</li>
-                <li class="detail-list-item">5000 km service package</li>
-                <li class="detail-list-item">5000 km service package</li>
-                <li class="detail-list-item">5000 km service package</li>
-                <li class="detail-list-item">5000 km service package</li>
-                <li class="detail-list-item">5000 km service package</li>
-                                <li class="detail-list-item">5000 km service package</li>
-                <li class="detail-list-item">5000 km service package</li>
-                <li class="detail-list-item">5000 km service package</li>
-                <li class="detail-list-item">5000 km service package</li>
-                <li class="detail-list-item">5000 km service package</li>
-                <li class="detail-list-item">5000 km service package</li>
+                <li class="detail-list-item" v-on:click="showServicePackage()">5000 km service package</li>
+                <li class="detail-list-item" v-on:click="showServicePackage()">5000 km service package</li>
+                <li class="detail-list-item" v-on:click="showServicePackage()">5000 km service package</li>
+                <li class="detail-list-item" v-on:click="showServicePackage()">5000 km service package</li>
+                <li class="detail-list-item" v-on:click="showServicePackage()">5000 km service package</li>
+                <li class="detail-list-item" v-on:click="showServicePackage()">5000 km service package</li>
+                <li class="detail-list-item" v-on:click="showServicePackage()">5000 km service package</li>
+                <li class="detail-list-item" v-on:click="showServicePackage()">5000 km service package</li>
+                <li class="detail-list-item" v-on:click="showServicePackage()">5000 km service package</li>
+                <li class="detail-list-item" v-on:click="showServicePackage()">5000 km service package</li>
+                <li class="detail-list-item" v-on:click="showServicePackage()">5000 km service package</li>
+                <li class="detail-list-item" v-on:click="showServicePackage()">5000 km service package</li>
+                <li class="detail-list-item" v-on:click="showServicePackage()">5000 km service package</li>
+                <li class="detail-list-item" v-on:click="showServicePackage()">5000 km service package</li>
+                <li class="detail-list-item" v-on:click="showServicePackage()">5000 km service package</li>
+                <li class="detail-list-item" v-on:click="showServicePackage()">5000 km service package</li>
+                <li class="detail-list-item" v-on:click="showServicePackage()">5000 km service package</li>
+                <li class="detail-list-item" v-on:click="showServicePackage()">5000 km service package</li>
+                <li class="detail-list-item" v-on:click="showServicePackage()">5000 km service package</li>
+                <li class="detail-list-item" v-on:click="showServicePackage()">5000 km service package</li>
+                <li class="detail-list-item" v-on:click="showServicePackage()">5000 km service package</li>
+                <li class="detail-list-item" v-on:click="showServicePackage()">5000 km service package</li>
+                <li class="detail-list-item" v-on:click="showServicePackage()">5000 km service package</li>
+                <li class="detail-list-item" v-on:click="showServicePackage()">5000 km service package</li>
             </ul>
         </div>
         <div class="server-package-wrapper" v-show="showFlag" @click.prevent="hideServicePackage">
@@ -107,6 +95,7 @@ export default {
         width:100%
         padding-right:27px
         padding-left:23px
+        padding-top:60px
     .selectServiceDetail .detail-list-item
         position:relative
         height:55px
@@ -127,7 +116,7 @@ export default {
         width:100%
         height:100%
         left:0
-        z-index:100
+        z-index:999
         overflow:auto
         backdrop-filter:blur
         background:rgba(7,17,27,0.8)

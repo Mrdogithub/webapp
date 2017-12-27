@@ -38,9 +38,9 @@ export default {
             this.dealerObj = activeDealer
             this.showDealerInfo = status
             if (status) {
-                document.querySelector('.amap-geolocation-con').style.bottom = '210px'
+                document.querySelector('.amap-geolocation-con').style.bottom = '250px'
             } else {
-                document.querySelector('.amap-geolocation-con').style.bottom = '20px'
+                document.querySelector('.amap-geolocation-con').style.bottom = '50px'
             }
         },
         goToSelectServiceType () {
